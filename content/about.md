@@ -8,6 +8,10 @@ Hello! I'm a software engineer from Poland. I am interested in topics related to
 programming and low-level tools for profiling Unix systems, particularly tools based on eBPF technology. Click
 [here](/opensource) to see my open source contributions.
 
+I am heavy linux user since 2013. Currently I am using [Arch Linux](https://archlinux.org/) distribution (but glorying
+this particular distro gives me cringe). I use x86 Tuxedo's PC and I highly
+recommend [Tuxedo manufacture](https://www.tuxedocomputers.com/en).
+
 However, I have not always been involved in software engineering – my formal education is an MSc in theoretical
 mathematics (aka pure mathematics). In the world of the queen of sciences, my interests focused on modern algebraic
 geometry.
@@ -21,10 +25,11 @@ interesting at any given moment — I assume that my readers have a moderately h
 
 In addition to everything I mentioned above, I am interested in Christian apologetics – the thoughts of the Church
 Fathers and, above all, the view/explanation of other religions from the perspective of Christian theology. I probably
-won't discuss this topic on this blog, but I have a few thoughts that may be published.
+won't discuss this topic on this blog, but I have a few thoughts that, who knows? May be published one sunny day.
 
 Another topic that takes up my time is learning jazz and playing the piano. I will almost certainly not publish anything
-on these matters.
+on these matters. Anyway I recommend you to check out [lilypond](https://lilypond.org/) - a free and open source
+software for creating music, ideal for [LaTeX](https://en.wikipedia.org/wiki/LaTeX) users.
 
 ## The aim of this blog
 
