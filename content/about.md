@@ -5,7 +5,8 @@ title = "About me"
 ## Whoami
 
 Hello! I'm a software engineer from Poland. I am interested in topics related to distributed systems, functional
-programming and low-level tools for profiling Unix systems, particularly tools based on eBPF technology.
+programming and low-level tools for profiling Unix systems, particularly tools based on eBPF technology. Click
+[here](/opensource) to see my open source contributions.
 
 However, I have not always been involved in software engineering – my formal education is an MSc in theoretical
 mathematics (aka pure mathematics). In the world of the queen of sciences, my interests focused on modern algebraic
