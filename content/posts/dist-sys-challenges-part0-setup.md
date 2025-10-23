@@ -213,16 +213,15 @@ an automated workflow will pay off later.
 ```shell
 .
 ├── echo
-│   ├── echo
 │   ├── go.mod
 │   ├── go.sum
-│   └── main.go
+│   ├── main.go
+│   └── node
 ├── go.work
 ├── go.work.sum
 └── Makefile
 
 2 directories, 7 files
-
 ```
 
 {{< /details >}}

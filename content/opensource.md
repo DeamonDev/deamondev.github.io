@@ -22,3 +22,5 @@ from time to time, and it was a great way to learn Go for me.
 PR's => https://github.com/thomaspoignant/go-feature-flag/pulls?q=is%3Apr+is%3Aclosed+author%3ADeamonDev
 
 Issues => https://github.com/thomaspoignant/go-feature-flag/issues?q=is%3Aissue%20author%3ADeamonDev
+
+My gopher avatar => ![gopher](/images/gopher.jpg)
