@@ -6,3 +6,7 @@ theme = 'm10c'
 [caches]
   [caches.images]
     dir = ':cacheDir/images'
+
+[markup]
+  [markup.highlight]
+    style = 'onedark'
