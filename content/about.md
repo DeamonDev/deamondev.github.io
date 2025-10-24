@@ -83,7 +83,7 @@ of [classifying space](https://en.wikipedia.org/wiki/Classifying_space) \(BG\).
 **Remark 3.** If \(G\) acts freely on \(X\), then canonical map \(EG \times_G X \rightarrow X/G\) is a homotopy
 equivalence, and in consequence \[H^*_G(X;\Lambda) \cong H^*(X/G;\Lambda)\]
 
-Assume that \(T = \mathbb{C}^*\) acts on a compact space \(M\). Then, equivariant cohomology \(H^*_T(M)\) is a module
+Assume that \(T = (\mathbb{C}^*)^n\) acts on a compact space \(M\). Then, equivariant cohomology \(H^*_T(M)\) is a module
 over equivariant cohomology ring of the point \[H^*_T(pt) = \mathbb{Q}[t_1,\dots,t_n]\]
 
 There is important
