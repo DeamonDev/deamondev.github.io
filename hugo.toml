@@ -20,7 +20,3 @@ theme = 'm10c'
 
 [params]
 math = true
-
-[services]
-  [services.disqus]
-    shortname = 'deamondev-github-io'
