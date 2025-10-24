@@ -83,8 +83,8 @@ of [classifying space](https://en.wikipedia.org/wiki/Classifying_space) \(BG\).
 **Remark 3.** If \(G\) acts freely on \(X\), then canonical map \(EG \times_G X \rightarrow X/G\) is a homotopy
 equivalence, and in consequence \[H^*_G(X;\Lambda) \cong H^*(X/G;\Lambda)\]
 
-Assume that \(T = (\mathbb{C}^*)^n\) acts on a compact space \(M\). Then, equivariant cohomology \(H^*_T(M)\) is a module
-over equivariant cohomology ring of the point \[H^*_T(pt) = \mathbb{Q}[t_1,\dots,t_n]\]
+Assume that \(T = (\mathbb{C}^*)^n\) acts on a compact space \(M\). Then, equivariant cohomology \(H^*_T(M)\) is a
+module over equivariant cohomology ring of the point \[H^*_T(pt) = \mathbb{Q}[t_1,\dots,t_n]\]
 
 There is important
 
@@ -100,8 +100,13 @@ cohomological information to the whole information. To sketch what I mean by tha
 *_T(M)\) the integral can by computed by summation: \[\int_M \alpha = \sum_{ \text{components } F \text{ of} M^T} \int_F
 \frac{\alpha|_F}{e_F} \] where of course \(e_F\) is [Euler class](https://en.wikipedia.org/wiki/Euler_class) of \(F\).
 Now, if \(M^T=\{p_0,p_1,\dots,p_n\} \), then the Euler class is product of weights \[e_p=\prod_{\lambda \in \Lambda}
-\lambda^{\text{dim}(V_\lambda)} \in H^*_T(p) \in \mathbb{Q}[t_1,\dots,t_n] \] The integral along \(M\) is equal to the
-sum of fractions: \[\int_M \alpha = \sum_{p \in M^T} \frac{\alpha|_p}{e_p} \]
+\lambda^{\text{dim}(V_\lambda)} \in H^*_T(p) \in \mathbb{Q}[t_1,\dots,t_n] \]
+
+provided that \(T_pM=\bigoplus_{\lambda \in \Lambda} V_\lambda\). The integral along \(M\) is equal to the sum of
+fractions: \[\int_M \alpha = \sum_{p \in M^T} \frac{\alpha|_p}{e_p} \]
+
+**Exercise.** Apply Berline-Vergne theorem to prove: \[\sum_{k=0}^n {n \choose k} (-1)^{m+k}k^m = \begin{cases} 0, &
+\text{for } m < n, \\ n!, & \text{for } m = n. \end{cases} \]
 
 Here is my joint work together with my PhD advisor, published in *Journal of Algebra*: https://arxiv.org/pdf/2108.03598.
 We applied localization theorem in to compute interesting equivariant classes of Borel orbits.
