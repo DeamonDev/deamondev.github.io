@@ -277,3 +277,5 @@ new file mode 100644
 
 {{< /details >}}
 
+{{ partial "disqus.html" . }}
+

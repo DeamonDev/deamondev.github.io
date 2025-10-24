@@ -10,3 +10,17 @@ theme = 'm10c'
 [markup]
   [markup.highlight]
     style = 'onedark'
+  [markup.goldmark]
+    [markup.goldmark.extensions]
+      [markup.goldmark.extensions.passthrough]
+        enable = true
+        [markup.goldmark.extensions.passthrough.delimiters]
+          block = [['\[', '\]'], ['$$', '$$']]
+          inline = [['\(', '\)']]
+
+[params]
+math = true
+
+[services]
+  [services.disqus]
+    shortname = ' @disqus_AuMdTdUg6u'
