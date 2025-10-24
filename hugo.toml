@@ -23,4 +23,4 @@ math = true
 
 [services]
   [services.disqus]
-    shortname = ' @disqus_AuMdTdUg6u'
+    shortname = 'deamondev-github-io'
