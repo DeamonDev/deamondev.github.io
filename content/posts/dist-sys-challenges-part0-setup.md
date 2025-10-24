@@ -120,7 +120,8 @@ The node is obligated to reply with `"init_ok"` message type:
 
 It is beneficial to read about this protocol before attempting to solve the challenges. For example, as I already
 pointed out, I'll use golang maelstrom package which
-exposes [ID method](https://pkg.go.dev/github.com/jepsen-io/maelstrom/demo/go#Node.ID) on `*Node` struct:
+exposes [ID method](https://pkg.go.dev/github.com/jepsen-io/maelstrom/demo/go#Node.ID)
+on [Node](https://pkg.go.dev/github.com/jepsen-io/maelstrom/demo/go#Node) struct:
 
 ```golang
 func (n *Node) ID() string
