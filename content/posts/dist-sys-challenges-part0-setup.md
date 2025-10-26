@@ -1,6 +1,6 @@
 +++
 date = '2025-10-19T17:43:15+02:00'
-draft = false
+draft = true
 title = 'Solving gossip-glomers distributed systems challenges: setup (part 0)'
 categories = ['software-development', 'distributed-systems']
 tags = ['distributed systems']  
@@ -169,25 +169,23 @@ To reduce manual setup, we’ll leverage go’s workspace capability to handle t
 
 ```makefile
 MODULE ?= echo
-BINARY ?= node
+BINARY ?= ~/go/bin/$(MODULE)
 
-run:
-	go run ./$(MODULE)
+MAELSTROM_CMD_echo = maelstrom/maelstrom test -w echo --bin $(BINARY) --node-count 1 --time-limit 10
+
+MAELSTROM_RUN_CMD = $(MAELSTROM_CMD_$(MODULE))
+
+run: build
+	@$(MAELSTROM_RUN_CMD)
 
 build:
-	go build -o ./$(MODULE)/$(BINARY) github.com/deamondev/gossip-glomers-tutorial/$(MODULE)
+	go install ./$(MODULE)
 
-
+debug:
+	maelstrom/maelstrom serve
 ```
 
-After running `make build`, a binary `node` will be produced under `echo` parent directory. We can run it directly or by
-using make:
-
-```shell
-❯ make run
-go run ./echo
-echo
-```
+After running `make build`, a binary `echo` will be produced under `~/go/bin` directory. TODO
 
 ## .gitignore
 
@@ -252,16 +250,22 @@ new file mode 100644
 index 0000000..a7ce503
 --- /dev/null
 +++ b/Makefile
-@@ -0,0 +1,9 @@
+@@ -0,0 +1,15 @@
 +MODULE ?= echo
-+BINARY ?= node
++BINARY ?= ~/go/bin/$(MODULE)
 +
-+run:
-+	go run ./$(MODULE)
++MAELSTROM_CMD_echo = maelstrom/maelstrom test -w echo --bin $(BINARY) --node-count 1 --time-limit 10
++
++MAELSTROM_RUN_CMD = $(MAELSTROM_CMD_$(MODULE))
++
++run: build
++	@$(MAELSTROM_RUN_CMD)
 +
 +build:
-+	go build -o ./$(MODULE)/$(BINARY) github.com/deamondev/gossip-glomers-tutorial/$(MODULE)
++	go install ./$(MODULE)
 +
++debug:
++	maelstrom/maelstrom serve
 diff --git a/echo/go.mod b/echo/go.mod
 new file mode 100644
 index 0000000..9e617ee
