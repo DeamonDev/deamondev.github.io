@@ -163,42 +163,14 @@ go 1.25.3
 use ./echo
 ```
 
-## Makefile
-
-To reduce manual setup, we’ll leverage go’s workspace capability to handle the selected module.
-
-```makefile
-MODULE ?= echo
-BINARY ?= ~/go/bin/$(MODULE)
-
-MAELSTROM_CMD_echo = maelstrom/maelstrom test -w echo --bin $(BINARY) --node-count 1 --time-limit 10
-
-MAELSTROM_RUN_CMD = $(MAELSTROM_CMD_$(MODULE))
-
-run: build
-	@$(MAELSTROM_RUN_CMD)
-
-build:
-	go install ./$(MODULE)
-
-debug:
-	maelstrom/maelstrom serve
-```
-
-After running `make build`, a binary `echo` will be produced under `~/go/bin` directory. TODO
-
 ## .gitignore
 
-Since I rather want to avoid commiting binaries to git, I post here a minimal .gitignore file. In future posts, I’ll
-omit updates to this file, but you can find all modifications in the attached diffs.
+Since I rather want to avoid commiting large files to git, I post here a minimal .gitignore file:
 
 ```.gitignore
 maelstrom/
 store/
 .idea/
-
-echo/echo
-
 ```
 
 # Summary
@@ -213,14 +185,11 @@ an automated workflow will pay off later.
 .
 ├── echo
 │   ├── go.mod
-│   ├── go.sum
-│   ├── main.go
-│   └── node
-├── go.work
-├── go.work.sum
-└── Makefile
+│   └── main.go
+├── .gitignore
+└── go.work
 
-2 directories, 7 files
+2 directories, 4 files
 ```
 
 {{< /details >}}
@@ -228,44 +197,22 @@ an automated workflow will pay off later.
 {{< details summary="**Click here to see the diff**">}}
 
 ```diff
-commit 79087620b727b6714615ddc9dd059228f4eb2920
+commit 013abf47fd8d49fc73633e19aa97d072c6e95866
 Author: deamondev <piotr.rudnicki94@protonmail.com>
-Date:   Thu Oct 23 10:26:49 2025 +0200
+Date:   Mon Oct 27 08:50:33 2025 +0100
 
     part0 setup
 
 diff --git a/.gitignore b/.gitignore
 new file mode 100644
-index 0000000..6197a58
+index 0000000..87bb0cb
 --- /dev/null
 +++ b/.gitignore
-@@ -0,0 +1,5 @@
+@@ -0,0 +1,3 @@
 +maelstrom/
 +store/
 +.idea/
-+
-+echo/node
-diff --git a/Makefile b/Makefile
-new file mode 100644
-index 0000000..a7ce503
---- /dev/null
-+++ b/Makefile
-@@ -0,0 +1,15 @@
-+MODULE ?= echo
-+BINARY ?= ~/go/bin/$(MODULE)
-+
-+MAELSTROM_CMD_echo = maelstrom/maelstrom test -w echo --bin $(BINARY) --node-count 1 --time-limit 10
-+
-+MAELSTROM_RUN_CMD = $(MAELSTROM_CMD_$(MODULE))
-+
-+run: build
-+	@$(MAELSTROM_RUN_CMD)
-+
-+build:
-+	go install ./$(MODULE)
-+
-+debug:
-+	maelstrom/maelstrom serve
+\ No newline at end of file
 diff --git a/echo/go.mod b/echo/go.mod
 new file mode 100644
 index 0000000..9e617ee
@@ -275,8 +222,24 @@ index 0000000..9e617ee
 +module github.com/deamondev/gossip-glomers-tutorial/echo
 +
 +go 1.25.3
-diff --git a/echo/go.sum b/echo/go.sum
+diff --git a/echo/main.go b/echo/main.go
 new file mode 100644
+index 0000000..e222e9f
+--- /dev/null
++++ b/echo/main.go
+@@ -0,0 +1,5 @@
++package main
++
++import "fmt"
++
++func main() { fmt.Println("echo") }
+diff --git a/go.work b/go.work
+new file mode 100644
+index 0000000..989015b
+--- /dev/null
++++ b/go.work
+@@ -0,0 +1,3 @@
++go 1.25.3
 
 ```
 

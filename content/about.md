@@ -109,7 +109,8 @@ fractions: \[\int_M \alpha = \sum_{p \in M^T} \frac{\alpha|_p}{e_p} \]
 \text{for } m < n, \\ n!, & \text{for } m = n. \end{cases} \]
 
 Here is my joint work together with my PhD advisor, published in *Journal of Algebra*: https://arxiv.org/pdf/2108.03598.
-We applied localization theorem in to compute interesting equivariant classes of Borel orbits.
+We applied localization theorem in to compute interesting equivariant classes of Borel orbits of square-zero upper
+triangular matrices.
 
 {{< /details >}}
 
