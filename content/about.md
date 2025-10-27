@@ -100,10 +100,16 @@ cohomological information to the whole information. To sketch what I mean by tha
 *_T(M)\) the integral can by computed by summation: \[\int_M \alpha = \sum_{ \text{components } F \text{ of} M^T} \int_F
 \frac{\alpha|_F}{e_F} \] where of course \(e_F\) is [Euler class](https://en.wikipedia.org/wiki/Euler_class) of \(F\).
 Now, if \(M^T=\{p_0,p_1,\dots,p_n\} \), then the Euler class is product of weights \[e_p=\prod_{\lambda \in \Lambda}
-\lambda^{\text{dim}(V_\lambda)} \in H^*_T(p) \in \mathbb{Q}[t_1,\dots,t_n] \]
+\lambda^{\text{dim}(V_\lambda)} \in H^*_T(p) \subseteq \mathbb{Q}[t_1,\dots,t_n] \]
 
 provided that \(T_pM=\bigoplus_{\lambda \in \Lambda} V_\lambda\). The integral along \(M\) is equal to the sum of
 fractions: \[\int_M \alpha = \sum_{p \in M^T} \frac{\alpha|_p}{e_p} \]
+
+Here, I should explain some implicit identifications. For a torus action \(G=T\), we identify \(H^*_T(pt)\) with
+polynomial algebra spanned by characters of \(T\): \[H^*_T(pt)=\mathbb{Q}[T^{\vee}]=\bigoplus_
+{k=0}^\infty [T^{\vee} \otimes \mathbb{Q}] \]
+
+A character \(\lambda: T \rightarrow \mathbb{C}^*\) corresponds to an element of \(H^2_T(pt)\).
 
 **Exercise.** Apply Berline-Vergne theorem to prove: \[\sum_{k=0}^n {n \choose k} (-1)^{m+k}k^m = \begin{cases} 0, &
 \text{for } m < n, \\ n!, & \text{for } m = n. \end{cases} \]
