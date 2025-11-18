@@ -1,0 +1,368 @@
++++
+date = '2025-10-28T08:47:45+01:00'
+draft = true
+enableEmoji = true
+title = 'Solving gossip-glomers distributed systems challenges: echo (part 1)'
+categories = ['software-development', 'distributed-systems']
+tags = ['distributed systems']
+toc = true
++++
+
+## Echo Challenge
+
+Let's start by solving the [first challenge](https://fly.io/dist-sys/1/). You may get the impression that my solution is exaggerated, and I would agree with you!
+I decided to add some extra code at this point to emphasize the project architecture that I try to use when
+solving more complex challenges. I also try to incorporate Golang best practices, but take them with a pinch of salt since I've never been paid
+as a Go developer.
+
+## Setup 
+
+Let's start by adding [maelstrom package](https://pkg.go.dev/github.com/jepsen-io/maelstrom/demo/go) to our `echo`
+module:
+
+```shell
+echo❯ go get github.com/jepsen-io/maelstrom/demo/go
+```
+
+### Makefile
+
+To automate process of building binary and running maelstrom workload over it, I created minimal Makefile:
+
+```Makefile
+MODULE ?= echo
+BINARY ?= ~/go/bin/maelstrom-$(MODULE)
+
+MAELSTROM_CMD_echo = maelstrom/maelstrom test -w echo --bin $(BINARY) --node-count 1 --time-limit 10
+
+MAELSTROM_RUN_CMD = $(MAELSTROM_CMD_$(MODULE))
+
+run: build
+	@$(MAELSTROM_RUN_CMD)
+
+build:
+	go build -o $(BINARY) ./$(MODULE)
+
+debug:
+	maelstrom/maelstrom serve
+```
+
+That requires manual intervention to change module name while solving particular challenge. During this series I'll
+update only the `MAELSTROM_CMD_X` entries and `MODULE` parameter.
+
+## Let's code!
+
+Let's create new file 
+
+```shell
+echo❯ touch server.go
+```
+
+Inside this file we'll define the struct `Server` which wraps `*maelstrom.Node` and other relevant things. In this 
+challenge we'll only store pointer to this node and node id. 
+
+
+### echo/server.go
+
+```go {lineNos=true}
+package main 
+
+import (
+    "encoding/json"
+	"log"
+
+	maelstrom "github.com/jepsen-io/maelstrom/demo/go"
+)
+
+type Server struct { 🄌
+    node   *maelstrom.Node
+	nodeID string
+}
+
+type InitMessageResponse struct { ➊
+	Type string `json:"type"`
+}
+
+type EchoMessage struct {
+	Type  string `json:"type"`
+	MsgID int64  `json:"msg_id"`
+	Echo  string `json:"echo"`
+}
+
+type EchoMessageResponse struct {
+	Type  string `json:"type"`
+	MsgID int64  `json:"msg_id"`
+	Echo  string `json:"echo"`
+}
+
+func NewServer(n *maelstrom.Node) *Server { ➋
+	s := &Server{node: n}
+
+	s.node.Handle("init", s.initHandler)
+	s.node.Handle("echo", s.echoHandler)
+
+	return s
+}
+```
+
+In 🄌 we define our struct which wraps `*maelstrom.Node` and stores node id. In ➊ I declared bunch of types related to 
+messages which our node should understand while running under maelstrom controller. In ➋ I declare public builder
+method based on `*maelstrom.Node` and we configure message handlers for our node. Note that we don't set `s.nodeID` 
+at that moment. You should know why after carefully reading the previous part of this series. Now let's define aforementioned
+handlers:
+
+```go {lineNos=true,lineNoStart=40}
+func (s *Server) initHandler(msg maelstrom.Message) error { 🄌
+	var body maelstrom.InitMessageBody
+	if err := json.Unmarshal(msg.Body, &body); err != nil {
+		return err
+	}
+
+	s.nodeID = body.NodeID ➊
+
+	log.Printf("Node id set to: %s", s.nodeID) ❷
+
+	initMessageResponse := InitMessageResponse{Type: "init_ok"}
+
+	return s.node.Reply(msg, initMessageResponse) ❸
+}
+
+func (s *Server) echoHandler(msg maelstrom.Message) error { ❹
+	var body EchoMessage
+	if err := json.Unmarshal(msg.Body, &body); err != nil {
+		return err
+	}
+
+	echoMessageResponse := EchoMessageResponse{
+		Type:  "echo_ok",
+		MsgID: body.MsgID,
+		Echo:  body.Echo,
+	}
+
+	return s.node.Reply(msg, echoMessageResponse)
+}
+
+func (s *Server) Run() error { ❺
+	return s.node.Run()
+}
+```
+
+The function in .. is our handler function for init message. It is required to transform `maelstrom.Message` and to 
+return an `error` (possibly `nil`). Note that I didn't declare the body of init message as for the `echo` message.
+That is because maelstrom provides its own `maelstrom.InitMessageBody` into which we unmarshall bytes sent throught
+`msg.Body`. 
+
+Having that, we successfully decoded the `InitMessageBody`, we're guaranteed to set our internal `nodeID` to 
+`body.NodeID`. 
+
+Next, we just audit that fact using `log` package. I think there is no need at this moment to use more advanced loggers,
+like [zap](https://pkg.go.dev/go.uber.org/zap) or [slog](https://go.dev/blog/slog). If during development of this series
+I poczuje taką potrzebę, then I probably use structured logger `slog` which I think is the 
+best option for greenfield go projects.
+
+### echo/main.go
+
+We had no choice but to actually run our server. The code below is straightforward:
+
+```go
+package main
+
+import (
+	"log"
+
+	maelstrom "github.com/jepsen-io/maelstrom/demo/go"
+)
+
+func main() {
+	n := maelstrom.NewNode()
+
+	s := NewServer(n)
+
+	if err := s.Run(); err != nil {
+		log.Fatal(err)
+	}
+}
+
+```
+
+## Double check of maelstrom specification
+
+In the previous part, I provided a rough description of the Maelstrom specification. In particular, I mentioned that 
+nodes communicate via their STDIN and STDOUT streams. But what about a double check?
+
+First, let's run our Echo workload with our echo binary but with a slightly increased timeout.
+
+```shell
+❯ maelstrom/maelstrom test -w echo --bin ~/go/bin/maelstrom-echo --node-count 1 --time-limit 180
+```
+
+I just want to make sure maelstrom would not finish its work during our diagnostics. 
+
+```shell
+ps aux | grep '/go/bin/maelstrom-echo
+
+deamond+   18792  0.0  0.0 1227720 4224 pts/3    Sl+  08:48   0:00 /home/deamondev/go/bin/maelstrom-echo
+```
+
+Having PID of our node, we can easily trace syscalls it performs using [strace(1)](https://man7.org/linux/man-pages/man1/strace.1.html)
+tool:
+
+```shell
+❯ strace -p 18792
+
+strace: Process 18792 attached
+read(0, "{\"id\":699,\"src\":\"c2\",\"dest\":\"n0\""..., 2589) = 93
+futex(0x5e2310, FUTEX_WAKE_PRIVATE, 1)  = 1
+futex(0xc000070958, FUTEX_WAKE_PRIVATE, 1) = 1
+--- SIGURG {si_signo=SIGURG, si_code=SI_TKILL, si_pid=18792, si_uid=1000} ---
+rt_sigreturn({mask=[]})                 = 1
+nanosleep({tv_sec=0, tv_nsec=3000}, NULL) = 0
+futex(0xc000100158, FUTEX_WAKE_PRIVATE, 1) = 1
+write(2, "2025/11/07 08:49:23 Sent {\"src\":"..., 130) = 130
+write(1, "{\"src\":\"n0\",\"dest\":\"c2\",\"body\":{"..., 104) = 104
+write(1, "\n", 1)                       = 1
+futex(0x5e1c30, FUTEX_WAIT_PRIVATE, 0, NULL) = 0
+futex(0x5e1c30, FUTEX_WAIT_PRIVATE, 0, NULL) = 0
+futex(0xc000100158, FUTEX_WAKE_PRIVATE, 1) = 1
+write(2, "2025/11/07 08:49:23 Sent {\"src\":"..., 131) = 131
+write(1, "{\"src\":\"n0\",\"dest\":\"c2\",\"body\":{"..., 105) = 105
+write(1, "\n", 1)                       = 1
+```
+
+We see a bunch of syscalls caused by interaction of maelstrom's client `c2` and our process. The `futex` syscall is
+present since go runtime [uses it internally](https://go.dev/src/runtime/os_linux.go) (under linux) for goroutine 
+scheduling and synchronization but it is totally irrelevant for our discussion.
+
+Under `store/latest/node-logs/n0.log` we find logs which corresponds to these [write(2)](https://www.man7.org/linux/man-pages/man2/write.2.html) 
+system calls with its first argument `fd=2`:
+
+```json
+2025/11/07 08:48:14 Received {c0 n0 {"type":"init","node_id":"n0","node_ids":["n0"],"msg_id":1}}
+2025/11/07 08:48:14 Node id set to: n0
+2025/11/07 08:48:14 Sent {"src":"n0","dest":"c0","body":{"in_reply_to":1,"type":"init_ok"}}
+2025/11/07 08:48:14 Node n0 initialized
+2025/11/07 08:48:14 Sent {"src":"n0","dest":"c0","body":{"in_reply_to":1,"type":"init_ok"}}
+2025/11/07 08:48:14 Received {c2 n0 {"echo":"Please echo 123","type":"echo","msg_id":1}}
+2025/11/07 08:48:14 Sent {"src":"n0","dest":"c2","body":{"echo":"Please echo 123","in_reply_to":1,"msg_id":1,"type":"echo_ok"}}
+2025/11/07 08:48:14 Received {c2 n0 {"echo":"Please echo 108","type":"echo","msg_id":2}}
+```
+
+## Running workload
+
+Drums rolling. Let's see if we're good:
+
+```shell
+❯ make run
+go build -o ~/go/bin/maelstrom-echo ./echo
+...
+INFO [2025-11-10 20:58:22,291] jepsen test runner - jepsen.core Run complete, writing
+INFO [2025-11-10 20:58:22,313] jepsen node n0 - maelstrom.db Tearing down n0
+INFO [2025-11-10 20:58:23,274] jepsen node n0 - maelstrom.net Shutting down Maelstrom network
+INFO [2025-11-10 20:58:23,274] jepsen test runner - jepsen.core Analyzing...
+INFO [2025-11-10 20:58:23,476] jepsen test runner - jepsen.core Analysis complete
+INFO [2025-11-10 20:58:23,483] jepsen results - jepsen.store Wrote /home/deamondev/software_development/tutorials/gossip-glomers-tutorial/store/echo/20251110T205811.203+0100/results.edn
+INFO [2025-11-10 20:58:23,502] jepsen test runner - jepsen.core {:perf {:latency-graph {:valid? true},
+        :rate-graph {:valid? true},
+        :valid? true},
+ :timeline {:valid? true},
+ :exceptions {:valid? true},
+ :stats {:valid? true,
+         :count 53,
+         :ok-count 53,
+         :fail-count 0,
+         :info-count 0,
+         :by-f {:echo {:valid? true,
+                       :count 53,
+                       :ok-count 53,
+                       :fail-count 0,
+                       :info-count 0}}},
+ :availability {:valid? true, :ok-fraction 1.0},
+ :net {:all {:send-count 109,
+             :recv-count 108,
+             :msg-count 109,
+             :msgs-per-op 2.0566037},
+       :clients {:send-count 109, :recv-count 108, :msg-count 109},
+       :servers {:send-count 0,
+                 :recv-count 0,
+                 :msg-count 0,
+                 :msgs-per-op 0.0},
+       :valid? true},
+ :workload {:valid? true, :errors ()},
+ :valid? true}
+
+
+Everything looks good! ヽ(‘ー`)ノ
+```
+
+
+## Summary
+
+...
+
+{{< details summary="**Click here to see the directory structure**">}}
+
+```shell
+.
+├── echo
+│   ├── go.mod
+│   ├── go.sum
+│   ├── main.go
+│   └── server.go
+├── .gitignore
+├── go.work
+└── Makefile
+
+2 directories, 7 files
+```
+
+{{< /details >}}
+
+{{< details summary="**Click here to see the diff**">}}
+
+```diff
+commit 4de9acc6d15e6e9f8fe16028d58b3ff11a5a42d6
+Author: deamondev <piotr.rudnicki94@protonmail.com>
+Date:   Mon Oct 27 09:13:03 2025 +0100
+
+    part1 echo
+
+diff --git a/Makefile b/Makefile
+new file mode 100644
+index 0000000..cfcf8ae
+--- /dev/null
++++ b/Makefile
+@@ -0,0 +1,15 @@
++MODULE ?= echo
++BINARY ?= ~/go/bin/$(MODULE)
++
++MAELSTROM_CMD_echo = maelstrom/maelstrom test -w echo --bin $(BINARY) --node-count 1 --time-limit 10
++
++MAELSTROM_RUN_CMD = $(MAELSTROM_CMD_$(MODULE))
++
++run: build
++	@$(MAELSTROM_RUN_CMD)
++
++build:
++	go install ./$(MODULE)
++
++debug:
++	maelstrom/maelstrom serve
+diff --git a/echo/go.mod b/echo/go.mod
+index 9e617ee..6c40213 100644
+--- a/echo/go.mod
++++ b/echo/go.mod
+@@ -1,3 +1,5 @@
+ module github.com/deamondev/gossip-glomers-tutorial/echo
+ 
+ go 1.25.3
++
++require github.com/jepsen-io/maelstrom/demo/go v0.0.0-20250920002117-21168aa9cdd2
+diff --git a/echo/go.sum b/echo/go.sum
+new file mode 100644
+index 0000000..062d861
+--- /dev/null
++++ b/echo/go.sum
+@@ -0,0 +1,2 @@
+
+```
+
+{{< /details >}}

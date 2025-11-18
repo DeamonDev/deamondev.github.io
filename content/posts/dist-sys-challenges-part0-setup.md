@@ -3,10 +3,11 @@ date = '2025-10-19T17:43:15+02:00'
 draft = true
 title = 'Solving gossip-glomers distributed systems challenges: setup (part 0)'
 categories = ['software-development', 'distributed-systems']
-tags = ['distributed systems']  
+tags = ['distributed systems']
+toc = true
 +++
 
-# Introduction
+## Introduction
 
 In this series, I will demonstrate my approach to solving the distributed systems challenges posted
 by [fly.io](https://fly.io/), known as [Gossip Glomers Challenges](https://fly.io/blog/gossip-glomers/). These are some
@@ -25,13 +26,12 @@ Here is link to the repository: https://github.com/DeamonDev/gossip-glomers-tuto
 specifications. So, before digging into the challenge, please read the corresponding specification. I assume you
 understand what needs to be done before you start looking at solutions.
 
-# Why golang?
+## Why golang?
 
 Mainly because there is an [official maelstrom package](https://pkg.go.dev/github.com/jepsen-io/maelstrom/demo/go) and I
-quite like golang for writing such kind of a software. I'd most likely opt for [gleam](https://gleam.run)'s package over
-go's if gleam offered it.
+quite like golang for writing such kind of a software. I'd most likely opt for [gleam](https://gleam.run) package if a gleam offered it.
 
-# What is maelstrom?
+## What is maelstrom?
 
 Maelstrom is a distributed systems testing framework. It allows us to test distributed algorithms under load. network
 partitions and so on. You may be familiar with jepsen, which is another framework for testing actual software (such as
@@ -70,7 +70,7 @@ file and run maelstrom binary with the workload flag set to this local file. For
 this [echo workload](https://github.com/jepsen-io/maelstrom/blob/main/src/maelstrom/workload/echo.clj) describes nodes
 that respond with the same message body as they receive, and it is precompiled into maelstrom binary directly.
 
-## Maelstrom protocol
+### Maelstrom protocol
 
 Quoting official protocol documentation:
 
@@ -79,7 +79,7 @@ Quoting official protocol documentation:
 
 Generic maelstrom message has the following form:
 
-```
+```json
 {
   "src":  A string identifying the node this message came from
   "dest": A string identifying the node this message is to
@@ -132,7 +132,7 @@ This identifier is valid only after the `init` message has been received.
 **Remark:** It should be noted that there is no network stack involved (counting loopback interface). Communication is
 based solely on sending JSON messages using raw syscalls using relevant file descriptions of internal OS processes.
 
-# Project setup
+## Project setup
 
 Enough talk. Let's start here. The plan is to create new golang project using go's workspace setup. After creating a new
 directory and initializing git repo, let's create our workspace at the root of this directory:
@@ -163,7 +163,17 @@ go 1.25.3
 use ./echo
 ```
 
-## .gitignore
+### Download maelstrom binary
+
+You can install `maelstrom` binary directly on your `$PATH` or just download it via:
+
+```shell
+❯ curl -L https://github.com/jepsen-io/maelstrom/releases/download/v0.2.4/maelstrom.tar.bz2 | tar -xj
+```
+
+I'll stick with the latter approach. The binary is then present under `./maelstrom/maelstrom`.
+
+### .gitignore
 
 Since I rather want to avoid commiting large files to git, I post here a minimal .gitignore file:
 
@@ -173,11 +183,11 @@ store/
 .idea/
 ```
 
-# Summary
+## Summary
 
 We’re ready to start solving the first challenge — the [echo challenge](https://fly.io/dist-sys/1/) (who would’ve
 expected that?). This part was just groundwork for our solutions, but I believe having a well-structured codebase with
-an automated workflow will pay off later.
+a reasonably automated workflow will pay off later.
 
 {{< details summary="**Click here to see the directory structure**">}}
 

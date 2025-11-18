@@ -7,7 +7,8 @@ math = true
 ## Whoami
 
 Hello! I'm a software engineer from Poland. I am interested in topics related to distributed systems, functional
-programming and low-level tools for profiling Unix systems, particularly tools based on eBPF technology.
+programming and low-level tools for profiling Unix systems, particularly tools based on [eBPF technology](
+https://ebpf.io/).
 
 I am heavy linux user since 2013. Currently I am using [Arch Linux](https://archlinux.org/) distribution (but glorying
 this particular distro gives me cringe). I use x86 Tuxedo's PC and I highly
@@ -93,7 +94,7 @@ There is important
 characters \[S = T^{\lor}-0 \subseteq H^2_T(pt)\]
 
 The case when this fixed points set is finite is of particular interest, since it allows us to quite easily glue local
-cohomological information to the whole information. To sketch what I mean by that, consider push-forward functor \[p_* =
+cohomological information to the whole information. To sketch what I mean by that, consider push-forward functor \[p_* =:
 \int_M : H^*_T(M) \rightarrow H^{*-2 dim(M)}(pt)\] where \(p: M \rightarrow pt\) is collapse map.
 
 **Theorem [Berline-Vergne].** For \(\alpha \in H^
@@ -114,8 +115,8 @@ A character \(\lambda: T \rightarrow \mathbb{C}^*\) corresponds to an element of
 **Exercise.** Apply Berline-Vergne theorem to prove: \[\sum_{k=0}^n {n \choose k} (-1)^{m+k}k^m = \begin{cases} 0, &
 \text{for } m < n, \\ n!, & \text{for } m = n. \end{cases} \]
 
-Here is my joint work together with my PhD advisor, published in *Journal of Algebra*: https://arxiv.org/pdf/2108.03598.
-We applied localization theorem in to compute interesting equivariant classes of Borel orbits of square-zero upper
+Here is my joint work together with my PhD advisor, [published](https://www.sciencedirect.com/science/article/abs/pii/S0021869322000527) in *Journal of Algebra*.
+We applied localization theorem to compute interesting equivariant classes of Borel orbits of square-zero upper
 triangular matrices.
 
 {{< /details >}}
