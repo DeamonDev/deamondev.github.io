@@ -10,12 +10,12 @@ toc = true
 
 ## Echo Challenge
 
-Let's start by solving the [first challenge](https://fly.io/dist-sys/1/). You may get the impression that my solution is exaggerated, and I would agree with you!
-I decided to add some extra code at this point to emphasize the project architecture that I try to use when
-solving more complex challenges. I also try to incorporate Golang best practices, but take them with a pinch of salt since I've never been paid
-as a Go developer.
+Let's start by solving the [first challenge](https://fly.io/dist-sys/1/). You may get the impression that my solution is
+exaggerated, and I would agree with you! I decided to add some extra code at this point to emphasize the project architecture 
+that I try to use when solving more complex challenges. I also try to incorporate Golang best practices, but take them with 
+a pinch of salt since I've never been paid as a Go developer.
 
-## Setup 
+## Setup
 
 Let's start by adding [maelstrom package](https://pkg.go.dev/github.com/jepsen-io/maelstrom/demo/go) to our `echo`
 module:
@@ -57,8 +57,7 @@ Let's create new file
 echo❯ touch server.go
 ```
 
-Inside this file we'll define the struct `Server` which wraps `*maelstrom.Node` and other relevant things. In this 
-challenge we'll only store pointer to this node and node id. 
+Inside this file we'll define the struct `Server` which wraps `*maelstrom.Node` and other relevant things. In this  challenge we'll only store pointer to this node and node id. 
 
 
 ### echo/server.go
@@ -103,12 +102,11 @@ func NewServer(n *maelstrom.Node) *Server { ➋
 	return s
 }
 ```
-
-In 🄌 we define our struct which wraps `*maelstrom.Node` and stores node id. In ➊ I declared bunch of types related to 
-messages which our node should understand while running under maelstrom controller. In ➋ I declare public builder
-method based on `*maelstrom.Node` and we configure message handlers for our node. Note that we don't set `s.nodeID` 
-at that moment. You should know why after carefully reading the previous part of this series. Now let's define aforementioned
-handlers:
+In 🄌, we define our struct that wraps the `*maelstrom.Node` type and store the node id. In ➊, I declare a number of types
+related to the messages that our node should understand while running under the Maelstrom controller. In step ➋, I declare 
+a public builder method based on `*maelstrom.Node`, and we configure the message handlers for our node. Note that we don't
+set `s.nodeID` at this stage. You should understand why after carefully reading the previous part of this series. If you 
+missed it, don't worry — I'll explain again shortly. Now, let's define the aforementioned handlers:
 
 ```go {lineNos=true,lineNoStart=40}
 func (s *Server) initHandler(msg maelstrom.Message) error { 🄌
@@ -146,24 +144,35 @@ func (s *Server) Run() error { ❺
 }
 ```
 
-The function in .. is our handler function for init message. It is required to transform `maelstrom.Message` and to 
+The function in  🄌 is our handler function for init message. It is required to transform `maelstrom.Message` and to 
 return an `error` (possibly `nil`). Note that I didn't declare the body of init message as for the `echo` message.
 That is because maelstrom provides its own `maelstrom.InitMessageBody` into which we unmarshall bytes sent throught
 `msg.Body`. 
 
-Having that, we successfully decoded the `InitMessageBody`, we're guaranteed to set our internal `nodeID` to 
+Having that, we successfully decoded the `InitMessageBody`, we're guaranteed to set ➊ our internal `nodeID` to 
 `body.NodeID`. 
 
-Next, we just audit that fact using `log` package. I think there is no need at this moment to use more advanced loggers,
+Next, we just audit ❷ that fact using [log](https://pkg.go.dev/log) package. I think there is no need at this moment to use more advanced loggers,
 like [zap](https://pkg.go.dev/go.uber.org/zap) or [slog](https://go.dev/blog/slog). If during development of this series
-I poczuje taką potrzebę, then I probably use structured logger `slog` which I think is the 
+I feel the need, then I probably use structured logger [slog](https://go.dev/blog/slog) which I have the optinion is the 
 best option for greenfield go projects.
+
+At ❸ we run [Reply](https://pkg.go.dev/github.com/jepsen-io/maelstrom/demo/go@v0.0.0-20250920002117-21168aa9cdd2#Node.Reply)
+method which basically do the heavy lifting of wrapping our message `body` to actual message sent
+thru' the wire to controller/node. I encourage you to see the
+[actual implementation](https://github.com/jepsen-io/maelstrom/blob/21168aa9cdd2/demo/go/node.go#L186) of this method.
+
+Analogously I declare ❹ `echoHandler`, the only difference is that we unmarshall message body to our own `EchoMessageResponse`.
+We need to expplicitly set `Type` of this message to `"echo_ok"` to fullfil workload specification.
+
+Finally ❺, we wrap node's [Run](https://pkg.go.dev/github.com/jepsen-io/maelstrom/demo/go#Node.Run) method into method on our `*Server` struct. 
+We wrap it since we do not expose node handle as public member.
 
 ### echo/main.go
 
-We had no choice but to actually run our server. The code below is straightforward:
+We have no choice but to actually run our server. The code below is straightforward:
 
-```go
+```go 
 package main
 
 import (
@@ -228,8 +237,8 @@ write(1, "{\"src\":\"n0\",\"dest\":\"c2\",\"body\":{"..., 105) = 105
 write(1, "\n", 1)                       = 1
 ```
 
-We see a bunch of syscalls caused by interaction of maelstrom's client `c2` and our process. The `futex` syscall is
-present since go runtime [uses it internally](https://go.dev/src/runtime/os_linux.go) (under linux) for goroutine 
+We see a bunch of syscalls caused by interaction of maelstrom's client `c2` and our process. The [futex(2)](https://www.man7.org/linux/man-pages/man2/futex.2.html) syscall
+is present since go runtime [uses it internally](https://go.dev/src/runtime/os_linux.go) (under linux) for goroutine 
 scheduling and synchronization but it is totally irrelevant for our discussion.
 
 Under `store/latest/node-logs/n0.log` we find logs which corresponds to these [write(2)](https://www.man7.org/linux/man-pages/man2/write.2.html) 
@@ -253,6 +262,9 @@ Drums rolling. Let's see if we're good:
 ```shell
 ❯ make run
 go build -o ~/go/bin/maelstrom-echo ./echo
+```
+
+```clojure
 ...
 INFO [2025-11-10 20:58:22,291] jepsen test runner - jepsen.core Run complete, writing
 INFO [2025-11-10 20:58:22,313] jepsen node n0 - maelstrom.db Tearing down n0

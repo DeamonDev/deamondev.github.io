@@ -54,7 +54,11 @@ Recall that **Burnside group** on \(n\) generators and exponent \(d\) is defined
 
 These groups are utterly mysterious and interesting for mathematicians, we know not to much about them. It is even hard
 to predict whether such a group is non-trivial, since we're basically killing each word of length \(d\). Nevertheless,
-there are interesting combinatorial results showing a bunch of such a group are infinite!
+there are interesting combinatorial results showing a bunch of such a group are infinite! There is well known
+_Burnside problem_ which asks for which positive integers \(m,n\) is the Burnside group \(B(m,n)\) finite?
+
+The full solution to this problem is not known. For example \(B(m,3), B(m, 4)\) and \(B(m,6)\) are all finite for
+all \(m\) but particular case \(B(2,5)\) remains open.
 
 **Theorem 2.** For *any* bi-invariant word metric \(|-|\) on the Burnside group \(B(n+1,2d)\) there is inequality
 \[\frac{1}{2} \text{diam}\left(\bigoplus_{B(n,d)} \mathbb{Z}_2,|-|_{\text{DS}}\right) \leq \text{diam}(B(n+1,2d),|-|)\]

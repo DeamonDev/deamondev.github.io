@@ -44,7 +44,7 @@ runs tests based on *workload*.
 
 The workload is simply a description of what should happen to your nodes. This may involve simulating network
 partitions, send messages to nodes, and so on. Based on their replies, it then collects statistics, among other things,
-in the generated store directory. To name a few:
+in the generated `store` directory. To name a few:
 
 - **Jepsen log**
     - file: `store/jepsen.log`
