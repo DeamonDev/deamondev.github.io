@@ -29,8 +29,8 @@ echo❯ go get github.com/jepsen-io/maelstrom/demo/go
 To automate process of building binary and running maelstrom workload over it, I created minimal Makefile:
 
 ```Makefile
-MODULE ?= echo
-BINARY ?= ~/go/bin/maelstrom-$(MODULE)
+MODULE = echo
+BINARY = ~/go/bin/maelstrom-$(MODULE)
 
 MAELSTROM_CMD_echo = maelstrom/maelstrom test -w echo --bin $(BINARY) --node-count 1 --time-limit 10
 
@@ -144,9 +144,9 @@ func (s *Server) Run() error { ❺
 }
 ```
 
-The function in  🄌 is our handler function for init message. It is required to transform `maelstrom.Message` and to 
-return an `error` (possibly `nil`). Note that I didn't declare the body of init message as for the `echo` message.
-That is because maelstrom provides its own `maelstrom.InitMessageBody` into which we unmarshall bytes sent throught
+The function in  🄌 is an init message handler function. It is required to transform `maelstrom.Message` and to 
+return an `error` (possibly `nil`). Note that, unlike for the 'echo' message, I didn't declare the body of the `init` message.
+This is because maelstrom provides its own `maelstrom.InitMessageBody` into which we unmarshall bytes sent through
 `msg.Body`. 
 
 Having that, we successfully decoded the `InitMessageBody`, we're guaranteed to set ➊ our internal `nodeID` to 
@@ -165,8 +165,8 @@ thru' the wire to controller/node. I encourage you to see the
 Analogously I declare ❹ `echoHandler`, the only difference is that we unmarshall message body to our own `EchoMessageResponse`.
 We need to expplicitly set `Type` of this message to `"echo_ok"` to fullfil workload specification.
 
-Finally ❺, we wrap node's [Run](https://pkg.go.dev/github.com/jepsen-io/maelstrom/demo/go#Node.Run) method into method on our `*Server` struct. 
-We wrap it since we do not expose node handle as public member.
+Finally, ❺ we wrap node's [Run](https://pkg.go.dev/github.com/jepsen-io/maelstrom/demo/go#Node.Run) method into method on our `*Server` struct. 
+We wrap it since we do not expose a node handle as a public member.
 
 ### echo/main.go
 
@@ -308,7 +308,10 @@ Everything looks good! ヽ(‘ー`)ノ
 
 ## Summary
 
-...
+I hope I haven't bored any of you, as there haven't been many distributed systems problems up to this point. Nevertheless,
+I have tried to smuggle what I consider to be the best practices for building such a system. The very [next challenge](https://fly.io/dist-sys/2/)
+also belongs to the 'warm-up' category and, in fact, is actually quite similar to the one we just solved 
+(at least in terms of the number of lines of code).
 
 {{< details summary="**Click here to see the directory structure**">}}
 
@@ -331,7 +334,7 @@ Everything looks good! ヽ(‘ー`)ノ
 {{< details summary="**Click here to see the diff**">}}
 
 ```diff
-commit 4de9acc6d15e6e9f8fe16028d58b3ff11a5a42d6
+commit 838a0612e357c4b44e1eb937b8ac34209277e373
 Author: deamondev <piotr.rudnicki94@protonmail.com>
 Date:   Mon Oct 27 09:13:03 2025 +0100
 
@@ -339,12 +342,12 @@ Date:   Mon Oct 27 09:13:03 2025 +0100
 
 diff --git a/Makefile b/Makefile
 new file mode 100644
-index 0000000..cfcf8ae
+index 0000000..08569fc
 --- /dev/null
 +++ b/Makefile
 @@ -0,0 +1,15 @@
-+MODULE ?= echo
-+BINARY ?= ~/go/bin/$(MODULE)
++MODULE = echo
++BINARY = ~/go/bin/maelstrom-$(MODULE)
 +
 +MAELSTROM_CMD_echo = maelstrom/maelstrom test -w echo --bin $(BINARY) --node-count 1 --time-limit 10
 +
@@ -354,7 +357,7 @@ index 0000000..cfcf8ae
 +	@$(MAELSTROM_RUN_CMD)
 +
 +build:
-+	go install ./$(MODULE)
++	go build -o $(BINARY) ./$(MODULE)
 +
 +debug:
 +	maelstrom/maelstrom serve
@@ -374,7 +377,110 @@ index 0000000..062d861
 --- /dev/null
 +++ b/echo/go.sum
 @@ -0,0 +1,2 @@
-
++github.com/jepsen-io/maelstrom/demo/go v0.0.0-20250920002117-21168aa9cdd2 h1:amu8AOcaJOjmNsau2tTH0eXOt6J173y4JT4v+iMLgis=
++github.com/jepsen-io/maelstrom/demo/go v0.0.0-20250920002117-21168aa9cdd2/go.mod h1:i6aVIs5AIOOaQF1lAisBm7DDeWM1Iopf+26UxjagsCU=
+diff --git a/echo/main.go b/echo/main.go
+index e222e9f..5a49ddb 100644
+--- a/echo/main.go
++++ b/echo/main.go
+@@ -1,5 +1,17 @@
+ package main
+ 
+-import "fmt"
++import (
++	"log"
+ 
+-func main() { fmt.Println("echo") }
++	maelstrom "github.com/jepsen-io/maelstrom/demo/go"
++)
++
++func main() {
++	n := maelstrom.NewNode()
++
++	s := NewServer(n)
++
++	if err := s.Run(); err != nil {
++		log.Fatal(err)
++	}
++}
+diff --git a/echo/server.go b/echo/server.go
+new file mode 100644
+index 0000000..b08cc47
+--- /dev/null
++++ b/echo/server.go
+@@ -0,0 +1,72 @@
++package main
++
++import (
++	"encoding/json"
++	"log"
++
++	maelstrom "github.com/jepsen-io/maelstrom/demo/go"
++)
++
++type Server struct {
++	node   *maelstrom.Node
++	nodeID string
++}
++
++type InitMessageResponse struct {
++	Type string `json:"type"`
++}
++
++type EchoMessage struct {
++	Type  string `json:"type"`
++	MsgID int64  `json:"msg_id"`
++	Echo  string `json:"echo"`
++}
++
++type EchoMessageResponse struct {
++	Type  string `json:"type"`
++	MsgID int64  `json:"msg_id"`
++	Echo  string `json:"echo"`
++}
++
++func NewServer(n *maelstrom.Node) *Server {
++	s := &Server{node: n}
++
++	s.node.Handle("init", s.initHandler)
++	s.node.Handle("echo", s.echoHandler)
++
++	return s
++}
++
++func (s *Server) initHandler(msg maelstrom.Message) error {
++	var body maelstrom.InitMessageBody
++	if err := json.Unmarshal(msg.Body, &body); err != nil {
++		return err
++	}
++
++	s.nodeID = body.NodeID
++
++	log.Printf("Node id set to: %s", s.nodeID)
++
++	initMessageResponse := InitMessageResponse{Type: "init_ok"}
++
++	return s.node.Reply(msg, initMessageResponse)
++}
++
++func (s *Server) echoHandler(msg maelstrom.Message) error {
++	var body EchoMessage
++	if err := json.Unmarshal(msg.Body, &body); err != nil {
++		return err
++	}
++
++	echoMessageResponse := EchoMessageResponse{
++		Type:  "echo_ok",
++		MsgID: body.MsgID,
++		Echo:  body.Echo,
++	}
++
++	return s.node.Reply(msg, echoMessageResponse)
++}
++
++func (s *Server) Run() error {
++	return s.node.Run()
++}
 ```
 
 {{< /details >}}
