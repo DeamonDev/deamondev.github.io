@@ -49,6 +49,9 @@ debug:
 That requires manual intervention to change module name while solving particular challenge. During this series I'll
 update only the `MAELSTROM_CMD_X` entries and `MODULE` parameter.
 
+I think the flags in the `MAELSTROM_CMD_echo` command are self-explanatory: there is basically exactly one node running
+(`--node-count 1`) and we restrict time to 10 seconds (`--time-limit 10`).
+
 ## Let's code!
 
 Let's create new file 

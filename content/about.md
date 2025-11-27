@@ -112,7 +112,7 @@ fractions: \[\int_M \alpha = \sum_{p \in M^T} \frac{\alpha|_p}{e_p} \]
 
 Here, I should explain some implicit identifications. For a torus action \(G=T\), we identify \(H^*_T(pt)\) with
 polynomial algebra spanned by characters of \(T\): \[H^*_T(pt)=\mathbb{Q}[T^{\vee}]=\bigoplus_
-{k=0}^\infty [T^{\vee} \otimes \mathbb{Q}] \]
+{k=0}^\infty  \operatorname{Sym}^k\left(T^{\vee} \otimes \mathbb{Q}\right) \]
 
 A character \(\lambda: T \rightarrow \mathbb{C}^*\) corresponds to an element of \(H^2_T(pt)\).
 
