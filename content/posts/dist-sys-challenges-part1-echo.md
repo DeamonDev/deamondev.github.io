@@ -80,11 +80,7 @@ type Server struct { 🄌
 	nodeID string
 }
 
-type InitMessageResponse struct { ➊
-	Type string `json:"type"`
-}
-
-type EchoMessage struct {
+type EchoMessage struct { ➊
 	Type  string `json:"type"`
 	MsgID int64  `json:"msg_id"`
 	Echo  string `json:"echo"`
@@ -122,9 +118,7 @@ func (s *Server) initHandler(msg maelstrom.Message) error { 🄌
 
 	log.Printf("Node id set to: %s", s.nodeID) ❷
 
-	initMessageResponse := InitMessageResponse{Type: "init_ok"}
-
-	return s.node.Reply(msg, initMessageResponse) ❸
+	return nil
 }
 
 func (s *Server) echoHandler(msg maelstrom.Message) error { ❹
@@ -160,16 +154,18 @@ like [zap](https://pkg.go.dev/go.uber.org/zap) or [slog](https://go.dev/blog/slo
 I feel the need, then I probably use structured logger [slog](https://go.dev/blog/slog) which I have the optinion is the 
 best option for greenfield go projects.
 
-At ❸ we run [Reply](https://pkg.go.dev/github.com/jepsen-io/maelstrom/demo/go@v0.0.0-20250920002117-21168aa9cdd2#Node.Reply)
+Analogously I declare ❹ `echoHandler`, the only difference is that we unmarshall message body to our own `EchoMessageResponse`.
+We need to expplicitly set `Type` of this message to `"echo_ok"` to fullfil workload specification.
+
+At TODO:MARKME!! we run [Reply](https://pkg.go.dev/github.com/jepsen-io/maelstrom/demo/go@v0.0.0-20250920002117-21168aa9cdd2#Node.Reply)
 method which basically do the heavy lifting of wrapping our message `body` to actual message sent
 thru' the wire to controller/node. I encourage you to see the
 [actual implementation](https://github.com/jepsen-io/maelstrom/blob/21168aa9cdd2/demo/go/node.go#L186) of this method.
 
-Analogously I declare ❹ `echoHandler`, the only difference is that we unmarshall message body to our own `EchoMessageResponse`.
-We need to expplicitly set `Type` of this message to `"echo_ok"` to fullfil workload specification.
-
 Finally, ❺ we wrap node's [Run](https://pkg.go.dev/github.com/jepsen-io/maelstrom/demo/go#Node.Run) method into method on our `*Server` struct. 
 We wrap it since we do not expose a node handle as a public member.
+
+TODO:REMARK ABOUT init_ok
 
 ### echo/main.go
 
@@ -185,6 +181,8 @@ import (
 )
 
 func main() {
+    log.SetOutput(os.StdErr)
+    
 	n := maelstrom.NewNode()
 
 	s := NewServer(n)
@@ -252,7 +250,6 @@ system calls with its first argument `fd=2`:
 2025/11/07 08:48:14 Node id set to: n0
 2025/11/07 08:48:14 Sent {"src":"n0","dest":"c0","body":{"in_reply_to":1,"type":"init_ok"}}
 2025/11/07 08:48:14 Node n0 initialized
-2025/11/07 08:48:14 Sent {"src":"n0","dest":"c0","body":{"in_reply_to":1,"type":"init_ok"}}
 2025/11/07 08:48:14 Received {c2 n0 {"echo":"Please echo 123","type":"echo","msg_id":1}}
 2025/11/07 08:48:14 Sent {"src":"n0","dest":"c2","body":{"echo":"Please echo 123","in_reply_to":1,"msg_id":1,"type":"echo_ok"}}
 2025/11/07 08:48:14 Received {c2 n0 {"echo":"Please echo 108","type":"echo","msg_id":2}}
