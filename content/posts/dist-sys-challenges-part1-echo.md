@@ -165,11 +165,50 @@ thru' the wire to controller/node. I encourage you to see the
 Finally, ❺ we wrap node's [Run](https://pkg.go.dev/github.com/jepsen-io/maelstrom/demo/go#Node.Run) method into method on our `*Server` struct. 
 We wrap it since we do not expose a node handle as a public member.
 
-TODO:REMARK ABOUT init_ok
+If you read previous part or just dabbled into maelstrom protocol specification, then you may be consterned with the
+fact we return `nil` in `initHandler` instead of `init_ok` message type. That is very misleading (and poorly documented).
+In fact, when we would send such a `init_ok` reply then in some workloads we would get an error of the following form: 
+
+```clojure
+2023-02-25 21:15:31,337{GMT}	WARN	[n1 stdout] maelstrom.process: Error!
+java.lang.AssertionError: Assert failed: Invalid dest for message #maelstrom.net.message.Message{:id 71, :src "n1", :dest "c10", :body {:in_reply_to 1, :type "init_ok"}}
+```
+
+The reason is, maelstrom go library [internally handles](https://github.com/jepsen-io/maelstrom/blob/main/demo/go/node.go#L166) `init` 
+message on its own, allowing us only evantually to hook into it:
+
+```go
+func (n *Node) handleInitMessage(msg Message) error {
+	var body InitMessageBody
+	if err := json.Unmarshal(msg.Body, &body); err != nil {
+		return fmt.Errorf("unmarshal init message body: %w", err)
+	}
+	n.Init(body.NodeID, body.NodeIDs)
+
+	// Delegate to application initialization handler, if specified.
+	if h := n.handlers["init"]; h != nil {
+		if err := h(msg); err != nil {
+			return err
+		}
+	}
+
+	// Send back a response that the node has been initialized.
+	log.Printf("Node %s initialized", n.id)
+	return n.Reply(msg, MessageBody{Type: "init_ok"})
+}
+```
+
+If we replied in handler, then `init_ok` would send to the controller node twice, which breaks maelstrom's specification.
+
+As I said, it is very misleading and rather hard to investigate what is going on. [Some folks experienced](https://community.fly.io/t/challenge-3b-inconsistency-with-jepsen/10999)
+this and asked for help, I hope somebody will be saved thanks to this post.
+
+At least it's comforting that it's not a bug, just poor documentation. Who among us would want to work with buggy software in its free time?
 
 ### echo/main.go
 
-We have no choice but to actually run our server. The code below is straightforward:
+We have no choice but to actually run our server. Before doing so, we need to take care of the logger's output.
+Otherwise, we risk interfering with maelstrom's controllers. The code below is straightforward:
 
 ```go 
 package main
@@ -181,7 +220,7 @@ import (
 )
 
 func main() {
-    log.SetOutput(os.StdErr)
+    log.SetOutput(os.Stderr)
     
 	n := maelstrom.NewNode()
 
@@ -312,175 +351,3 @@ I hope I haven't bored any of you, as there haven't been many distributed system
 I have tried to smuggle what I consider to be the best practices for building such a system. The very [next challenge](https://fly.io/dist-sys/2/)
 also belongs to the 'warm-up' category and, in fact, is actually quite similar to the one we just solved 
 (at least in terms of the number of lines of code).
-
-{{< details summary="**Click here to see the directory structure**">}}
-
-```shell
-.
-├── echo
-│   ├── go.mod
-│   ├── go.sum
-│   ├── main.go
-│   └── server.go
-├── .gitignore
-├── go.work
-└── Makefile
-
-2 directories, 7 files
-```
-
-{{< /details >}}
-
-{{< details summary="**Click here to see the diff**">}}
-
-```diff
-commit 838a0612e357c4b44e1eb937b8ac34209277e373
-Author: deamondev <piotr.rudnicki94@protonmail.com>
-Date:   Mon Oct 27 09:13:03 2025 +0100
-
-    part1 echo
-
-diff --git a/Makefile b/Makefile
-new file mode 100644
-index 0000000..08569fc
---- /dev/null
-+++ b/Makefile
-@@ -0,0 +1,15 @@
-+MODULE = echo
-+BINARY = ~/go/bin/maelstrom-$(MODULE)
-+
-+MAELSTROM_CMD_echo = maelstrom/maelstrom test -w echo --bin $(BINARY) --node-count 1 --time-limit 10
-+
-+MAELSTROM_RUN_CMD = $(MAELSTROM_CMD_$(MODULE))
-+
-+run: build
-+	@$(MAELSTROM_RUN_CMD)
-+
-+build:
-+	go build -o $(BINARY) ./$(MODULE)
-+
-+debug:
-+	maelstrom/maelstrom serve
-diff --git a/echo/go.mod b/echo/go.mod
-index 9e617ee..6c40213 100644
---- a/echo/go.mod
-+++ b/echo/go.mod
-@@ -1,3 +1,5 @@
- module github.com/deamondev/gossip-glomers-tutorial/echo
- 
- go 1.25.3
-+
-+require github.com/jepsen-io/maelstrom/demo/go v0.0.0-20250920002117-21168aa9cdd2
-diff --git a/echo/go.sum b/echo/go.sum
-new file mode 100644
-index 0000000..062d861
---- /dev/null
-+++ b/echo/go.sum
-@@ -0,0 +1,2 @@
-+github.com/jepsen-io/maelstrom/demo/go v0.0.0-20250920002117-21168aa9cdd2 h1:amu8AOcaJOjmNsau2tTH0eXOt6J173y4JT4v+iMLgis=
-+github.com/jepsen-io/maelstrom/demo/go v0.0.0-20250920002117-21168aa9cdd2/go.mod h1:i6aVIs5AIOOaQF1lAisBm7DDeWM1Iopf+26UxjagsCU=
-diff --git a/echo/main.go b/echo/main.go
-index e222e9f..5a49ddb 100644
---- a/echo/main.go
-+++ b/echo/main.go
-@@ -1,5 +1,17 @@
- package main
- 
--import "fmt"
-+import (
-+	"log"
- 
--func main() { fmt.Println("echo") }
-+	maelstrom "github.com/jepsen-io/maelstrom/demo/go"
-+)
-+
-+func main() {
-+	n := maelstrom.NewNode()
-+
-+	s := NewServer(n)
-+
-+	if err := s.Run(); err != nil {
-+		log.Fatal(err)
-+	}
-+}
-diff --git a/echo/server.go b/echo/server.go
-new file mode 100644
-index 0000000..b08cc47
---- /dev/null
-+++ b/echo/server.go
-@@ -0,0 +1,72 @@
-+package main
-+
-+import (
-+	"encoding/json"
-+	"log"
-+
-+	maelstrom "github.com/jepsen-io/maelstrom/demo/go"
-+)
-+
-+type Server struct {
-+	node   *maelstrom.Node
-+	nodeID string
-+}
-+
-+type InitMessageResponse struct {
-+	Type string `json:"type"`
-+}
-+
-+type EchoMessage struct {
-+	Type  string `json:"type"`
-+	MsgID int64  `json:"msg_id"`
-+	Echo  string `json:"echo"`
-+}
-+
-+type EchoMessageResponse struct {
-+	Type  string `json:"type"`
-+	MsgID int64  `json:"msg_id"`
-+	Echo  string `json:"echo"`
-+}
-+
-+func NewServer(n *maelstrom.Node) *Server {
-+	s := &Server{node: n}
-+
-+	s.node.Handle("init", s.initHandler)
-+	s.node.Handle("echo", s.echoHandler)
-+
-+	return s
-+}
-+
-+func (s *Server) initHandler(msg maelstrom.Message) error {
-+	var body maelstrom.InitMessageBody
-+	if err := json.Unmarshal(msg.Body, &body); err != nil {
-+		return err
-+	}
-+
-+	s.nodeID = body.NodeID
-+
-+	log.Printf("Node id set to: %s", s.nodeID)
-+
-+	initMessageResponse := InitMessageResponse{Type: "init_ok"}
-+
-+	return s.node.Reply(msg, initMessageResponse)
-+}
-+
-+func (s *Server) echoHandler(msg maelstrom.Message) error {
-+	var body EchoMessage
-+	if err := json.Unmarshal(msg.Body, &body); err != nil {
-+		return err
-+	}
-+
-+	echoMessageResponse := EchoMessageResponse{
-+		Type:  "echo_ok",
-+		MsgID: body.MsgID,
-+		Echo:  body.Echo,
-+	}
-+
-+	return s.node.Reply(msg, echoMessageResponse)
-+}
-+
-+func (s *Server) Run() error {
-+	return s.node.Run()
-+}
-```
-
-{{< /details >}}

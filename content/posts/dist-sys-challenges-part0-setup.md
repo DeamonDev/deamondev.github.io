@@ -16,10 +16,6 @@ the [maelstrom](https://github.com/jepsen-io/maelstrom) library (the younger bro
 of [jepsen](https://github.com/jepsen-io/jepsen) fault injection framework). In this post, I'll provide a brief
 introduction to maelstrom and I'll setup the golang repository.
 
-At the end of each article, you will find the diff output of `git show HEAD`, which you can use to double-check or to
-get the TL;DR. I also manage git branches corresponding to these articles, for example the branch corresponding to this
-one is `part0-setup`.
-
 Here is link to the repository: https://github.com/DeamonDev/gossip-glomers-tutorial/tree/master
 
 **Disclaimer:** Since I sometimes use linux tracing stack tools, I should emphasize that all of this was developed under
@@ -192,69 +188,3 @@ store/
 We’re ready to start solving the first challenge — the [echo challenge](https://fly.io/dist-sys/1/) (who would’ve
 expected that?). This part was just groundwork for our solutions, but I believe having a well-structured codebase with
 a reasonably automated workflow will pay off later.
-
-{{< details summary="**Click here to see the directory structure**">}}
-
-```shell
-.
-├── echo
-│   ├── go.mod
-│   └── main.go
-├── .gitignore
-└── go.work
-
-2 directories, 4 files
-```
-
-{{< /details >}}
-
-{{< details summary="**Click here to see the diff**">}}
-
-```diff
-commit 013abf47fd8d49fc73633e19aa97d072c6e95866
-Author: deamondev <piotr.rudnicki94@protonmail.com>
-Date:   Mon Oct 27 08:50:33 2025 +0100
-
-    part0 setup
-
-diff --git a/.gitignore b/.gitignore
-new file mode 100644
-index 0000000..87bb0cb
---- /dev/null
-+++ b/.gitignore
-@@ -0,0 +1,3 @@
-+maelstrom/
-+store/
-+.idea/
-\ No newline at end of file
-diff --git a/echo/go.mod b/echo/go.mod
-new file mode 100644
-index 0000000..9e617ee
---- /dev/null
-+++ b/echo/go.mod
-@@ -0,0 +1,3 @@
-+module github.com/deamondev/gossip-glomers-tutorial/echo
-+
-+go 1.25.3
-diff --git a/echo/main.go b/echo/main.go
-new file mode 100644
-index 0000000..e222e9f
---- /dev/null
-+++ b/echo/main.go
-@@ -0,0 +1,5 @@
-+package main
-+
-+import "fmt"
-+
-+func main() { fmt.Println("echo") }
-diff --git a/go.work b/go.work
-new file mode 100644
-index 0000000..989015b
---- /dev/null
-+++ b/go.work
-@@ -0,0 +1,3 @@
-+go 1.25.3
-
-```
-
-{{< /details >}}
