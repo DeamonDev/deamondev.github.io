@@ -18,8 +18,8 @@ introduction to maelstrom and I'll setup the golang repository.
 
 Here is link to the repository: https://github.com/DeamonDev/gossip-glomers-tutorial/tree/master
 
-**Disclaimer:** Since I sometimes use linux tracing stack tools, I should emphasize that all of this was developed under
-linux. But who cares for the other ones?
+**Disclaimer:** While solving these challenges I sometimes use linux tracing stack tools, probably I should emphasize
+that all of this was developed under linux. But who cares for the rest?
 
 **Another Disclaimer:** Regarding the challenges: I don't want to rewrite what is already written in the challenge
 specifications. So, before digging into the challenge, please read the corresponding specification. I assume you
