@@ -53,7 +53,7 @@ Recall that **Burnside group** on \(n\) generators and exponent \(d\) is defined
 \[ B(n,d) := \langle x_1, \dots x_n | \omega^d=1 \rangle_{\omega \in (S \cup S^{-1})^*} \]
 
 These groups are utterly mysterious and interesting for mathematicians, we know not to much about them. It is even hard
-to predict whether such a group is non-trivial, since we're basically killing each word of length \(d\). Nevertheless,
+to predict whether such a group is non-trivial, since we're basically killing \(d\)-th power of each word! Nevertheless,
 there are interesting combinatorial results showing a bunch of such a group are infinite! There is well known
 _Burnside problem_ which asks for which positive integers \(m,n\) is the Burnside group \(B(m,n)\) finite?
 

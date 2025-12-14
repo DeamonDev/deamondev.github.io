@@ -32,9 +32,11 @@ To automate process of building binary and running maelstrom workload over it, I
 MODULE = echo
 BINARY = ~/go/bin/maelstrom-$(MODULE)
 
+WORKLOAD = echo
+
 MAELSTROM_CMD_echo = maelstrom/maelstrom test -w echo --bin $(BINARY) --node-count 1 --time-limit 10
 
-MAELSTROM_RUN_CMD = $(MAELSTROM_CMD_$(MODULE))
+MAELSTROM_RUN_CMD = $(MAELSTROM_CMD_$(WORKLOAD))
 
 run: build
 	@$(MAELSTROM_RUN_CMD)
@@ -47,7 +49,7 @@ debug:
 ```
 
 That requires manual intervention to change module name while solving particular challenge. During this series I'll
-update only the `MAELSTROM_CMD_X` entries and `MODULE` parameter.
+update only the `MAELSTROM_CMD_X` entries, `MODULE` and `WORKLOAD` parameters.
 
 I think the flags in the `MAELSTROM_CMD_echo` command are self-explanatory: there is basically exactly one node running
 (`--node-count 1`) and we restrict time to 10 seconds (`--time-limit 10`).
@@ -200,10 +202,11 @@ func (n *Node) handleInitMessage(msg Message) error {
 
 If we replied in handler, then `init_ok` would send to the controller node twice, which breaks maelstrom's specification.
 
-As I said, it is very misleading and rather hard to investigate what is going on. [Some folks experienced](https://community.fly.io/t/challenge-3b-inconsistency-with-jepsen/10999)
-this and asked for help, I hope somebody will be saved thanks to this post.
+As I said, it is very misleading and challenging to investigate what is going on without this knowledge. [Some folks have experienced](https://community.fly.io/t/challenge-3b-inconsistency-with-jepsen/10999) 
+this issue and asked for help. Hopefully, this post will help someone.
 
-At least it's comforting that it's not a bug, just poor documentation. Who among us would want to work with buggy software in its free time?
+At least it’s good to know that it’s not a bug, just poor documentation. Who among us would want to work with buggy 
+software in their free time?
 
 ### echo/main.go
 
@@ -343,6 +346,18 @@ INFO [2025-11-10 20:58:23,502] jepsen test runner - jepsen.core {:perf {:latency
 
 Everything looks good! ヽ(‘ー`)ノ
 ```
+
+We did it! I think these logs should be understandable after careful read. The most important metric here is `:msgs-per-op`
+which measures average number of network messages sent per client operation. For each echo operation, the system typically:
+
+- sends request to the node (1 message)
+- node sends response back (1 message)
+
+Thats *roughly* 2 messages per operation. The extra `0.566037` likely comes from protocol overhead - things like heartbeats 
+between nodes, timeouts being retried, or acknowledgments in the gossip protocol.
+
+**In summary:** The system is working well — all operations succeeded, the network is stable, and message overhead is 
+reasonable.
 
 
 ## Summary
