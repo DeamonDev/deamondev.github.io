@@ -9,13 +9,13 @@ toc = true
 
 ## Unique IDs Challenge
 
-In this challenge we'll run three-node workload which should implement a globally-unique ID generation. Basically, this
-means that each of our nodes should respond with unique-id every time it is asked for, being totally available, meaning
+In this challenge we'll run three-node workload which should implement a globally-unique ID generation system.
+Basically, this means that each of our nodes should respond with unique-id every time it is asked for, being totally available, meaning
 that it can continue to operate even in the face of network partitions.
 
 ## Setup
 
-Run these commands to bootstrap our project:
+Run these commands to bootstrap this part:
 
 ```shell
 ❯ mkdir unique-ids
@@ -24,7 +24,7 @@ unique-ids❯ go mod init github.com/deamondev/gossip-glomers-tutorial/unique-id
 ```
 
 ### Makefile
-Let's just change `MODULE` and `WORKLOAD` parameters to `unique-ids`. Our new maelstrom command should be: 
+Let's calibrate `MODULE` and `WORKLOAD` parameters to be `unique-ids`. Our new maelstrom command should be: 
 
 ```shell
 MAELSTROM_CMD_unique-ids = maelstrom/maelstrom test -w unique-ids --bin $(BINARY) --time-limit 30 --rate 1000 --node-count 3 --availability total --nemesis partition
@@ -58,7 +58,7 @@ import (
 type Server struct {
 	node    *maelstrom.Node
 	nodeID  string
-	mu      sync.Mutex
+	mu      sync.Mutex 🄌
 	counter uint64
 }
 
@@ -93,22 +93,22 @@ func (s *Server) initHandler(msg maelstrom.Message) error {
 	return nil
 }
 
-func (s *Server) generateHandler(msg maelstrom.Message) error {
+func (s *Server) generateHandler(msg maelstrom.Message) error { ➊
 	var body GenerateMessage
 	if err := json.Unmarshal(msg.Body, &body); err != nil {
 		return err
 	}
 
-	s.mu.Lock()
+	s.mu.Lock() ➋
 	defer s.mu.Unlock()
 
-	id := fmt.Sprintf("%s-%d", s.nodeID, s.counter)
+	id := fmt.Sprintf("%s-%d", s.nodeID, s.counter) ❸
 	generateMessageResponse := GenerateMessageResponse{
 		Type: "generate_ok",
 		Id:   id,
 	}
 
-	s.counter++
+	s.counter++ ❹
 	log.Printf("Internal node counter incremented, current value: %d", s.counter)
 
 	return s.node.Reply(msg, generateMessageResponse)
