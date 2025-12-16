@@ -169,7 +169,7 @@ We wrap it since we do not expose a node handle as a public member.
 
 If you read previous part or just dabbled into maelstrom protocol specification, then you may be consterned with the
 fact we return `nil` in `initHandler` instead of `init_ok` message type. That is very misleading (and poorly documented).
-In fact, when we would send such a `init_ok` reply then in some workloads we would get an error of the following form: 
+In fact, when we would send such a `init_ok` reply then in some workloads we may get an error of the following form: 
 
 ```clojure
 2023-02-25 21:15:31,337{GMT}	WARN	[n1 stdout] maelstrom.process: Error!
@@ -203,7 +203,7 @@ func (n *Node) handleInitMessage(msg Message) error {
 If we replied in handler, then `init_ok` would send to the controller node twice, which breaks maelstrom's specification.
 
 As I said, it is very misleading and challenging to investigate what is going on without this knowledge. [Some folks have experienced](https://community.fly.io/t/challenge-3b-inconsistency-with-jepsen/10999) 
-this issue and asked for help. Hopefully, this post will help someone.
+this issue and asked for help.
 
 At least it’s good to know that it’s not a bug, just poor documentation. Who among us would want to work with buggy 
 software in their free time?
