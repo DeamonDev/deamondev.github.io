@@ -159,7 +159,7 @@ best option for greenfield go projects.
 Analogously I declare ❹ `echoHandler`, the only difference is that we unmarshall message body to our own `EchoMessageResponse`.
 We need to expplicitly set `Type` of this message to `"echo_ok"` to fullfil workload specification.
 
-At TODO:MARKME!! we run [Reply](https://pkg.go.dev/github.com/jepsen-io/maelstrom/demo/go@v0.0.0-20250920002117-21168aa9cdd2#Node.Reply)
+Then, I run [Reply](https://pkg.go.dev/github.com/jepsen-io/maelstrom/demo/go@v0.0.0-20250920002117-21168aa9cdd2#Node.Reply)
 method which basically do the heavy lifting of wrapping our message `body` to actual message sent
 thru' the wire to controller/node. I encourage you to see the
 [actual implementation](https://github.com/jepsen-io/maelstrom/blob/21168aa9cdd2/demo/go/node.go#L186) of this method.
@@ -236,7 +236,7 @@ func main() {
 
 ```
 
-## Double check of maelstrom specification
+## Double check of maelstrom specification via tracing of linux syscalls
 
 In the previous part, I provided a rough description of the Maelstrom specification. In particular, I mentioned that 
 nodes communicate via their STDIN and STDOUT streams. But what about a double check?
