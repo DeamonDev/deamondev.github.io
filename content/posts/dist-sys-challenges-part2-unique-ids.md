@@ -122,8 +122,8 @@ func (s *Server) Run() error {
 
 There is now a shared mutable state stored 🄌 inside the `Server` struct, which is just an internal counter 
 that our node increments. 
-We protect it via a `sync.Mutex`. The idea is that `i`-th node should return something like `n$i-42` when
-asked `42`-nd time for a unique id. The node prefix and the protected counter guarantee uniqueness. Let's
+We protect it via a `sync.Mutex`. The idea is that `i`-th node should return something like `n17-42` when
+asked node `17`, `42`-nd time for a unique id. The node prefix and the protected counter guarantee uniqueness. Let's
 focus on the implementation of the handler for doing so ➊. After locking ➋ the counter for the lifetime with
 deferring for the lifetime of the function execution with deferring, we prepare aforementioned `id` ❸ returned 
 from the handler. Finally ❹, the counter is being incremented.

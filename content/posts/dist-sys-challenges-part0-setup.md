@@ -135,7 +135,7 @@ based solely on sending JSON messages using raw syscalls using relevant file des
 ## Project setup
 
 Enough talk. Let's start here. The plan is to create new golang project using go's workspace setup. After creating a new
-directory and initializing git repo, let's create our workspace at the root of this directory:
+directory and initializing git repo, let's create our [workspace](https://go.dev/doc/tutorial/workspaces) at the root of this directory:
 
 ```shell
 ❯ go work init

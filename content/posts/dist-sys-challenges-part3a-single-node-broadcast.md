@@ -9,14 +9,14 @@ toc = true
 
 ## Single Node Broadcast Challenge
 
-This is very first challenge related to *broadcast* system we need to implement. The idea is that our glomers (nodes) 
+This is the very first challenge related to the *broadcast* system we need to implement. The idea is that our glomers (nodes) 
 receive messages they need to propagate to another gossips. Each node stores messages it already seen and should be able
 to return them if RPC `read` call was performed by some controller node. In this part we need to run one-node broadcast
 system, so the only messages will be performed from controller nodes to our single node. In fact, there is no demand 
 to perform any actual broadcasting at all, since the only specification which will be checked is that the `read` RPC
-calls return expected list of messages. The messages sent from controller are unique (per node). 
+calls return an expected list of messages. The messages sent from the controller are unique (per node). 
 
-There are two important metrics which we'll need to tune at later stages of the broadcast challenge: 
+There are two important metrics that we'll need to tune at later stages of the broadcast challenge: 
 
 - `:net -> :msgs-per-op`
 - `:workload -> :stable-latencies`
@@ -191,11 +191,11 @@ The actual implementation is simplified since the only possibility of messages u
 ![Maelstrom](/images/broadcast3a.drawio.svg)
 
 That is, there is no possibility our node will receive any message from another node (since we're running one-node cluster).
-In our `Server` struct I add `sync.Mutex` protected map of message our node already have seen. In (1) I define handler 
+In our `Server` struct I add 🄌 `sync.Mutex` protected map of message our node already have seen. In ➊ I define handler 
 for `broadcast` message. We simply analyze whether our node has already seen broadcasted message and eventually
-we update our map of messages. Plain and easy. In `read` handler we simply read and return messages from our map. Finally,
-in `topology` message handler we just ignore the topology *suggested* by maelstrom to our node. That is because in later
-stages our topology will be as follows: neighbours of given node are all the nodes except itself (kind of discrete topology). 
+we update our map of messages ➋. Plain and easy. In `read` handler we simply read and return messages from our map ➌. Finally,
+in `topology` message handler ➍ we just ignore the topology *suggested* by maelstrom to our node. That is because in later
+stages our topology will be as follows: neighbors of given node are all the nodes except itself (kind of discrete topology). 
 In final stages we'll build more efficient topology, but still it will be different from the one proposed by maelstrom.
 
 ## Running workload
