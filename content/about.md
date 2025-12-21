@@ -8,7 +8,8 @@ math = true
 
 Hello! I'm a software engineer from Poland. I am interested in topics related to distributed systems, functional
 programming and low-level tools for profiling Unix systems, particularly tools based on [eBPF technology](
-https://ebpf.io/).
+https://ebpf.io/). One thing I try to do quite regularly is reading source code of [Apache Flink](https://flink.apache.org/)
+and [Apache Kafka](https://kafka.apache.org/).
 
 I am heavy linux user since 2013. Currently I am using [Arch Linux](https://archlinux.org/) distribution (but glorying
 this particular distro gives me cringe). I use x86 Tuxedo's PC and I highly
