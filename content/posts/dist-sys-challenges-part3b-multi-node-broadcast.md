@@ -9,7 +9,8 @@ toc = true
 
 ## Multi Node Broadcast Challenge
 
-...
+In this part we are supposed to pass multi-node broadcast workload. Our node will be replicated `5` times across a cluster 
+that has no network partitions. 
 
 ## Setup
 
