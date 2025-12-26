@@ -17,7 +17,7 @@ Run these commands to bootstrap this part:
 
 ```shell
 ❯ mkdir broadcast-3b
-unique-ids❯ go mod init github.com/deamondev/gossip-glomers-tutorial/broadcast-3b
+broadcast-3b❯ go mod init github.com/deamondev/gossip-glomers-tutorial/broadcast-3b
 ❯ go work use ./broadcast-3b
 ```
 

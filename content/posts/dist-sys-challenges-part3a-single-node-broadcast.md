@@ -39,7 +39,7 @@ Run these commands to bootstrap this part:
 
 ```shell
 ❯ mkdir broadcast-3a
-unique-ids❯ go mod init github.com/deamondev/gossip-glomers-tutorial/broadcast-3a
+broadcast-3a❯ go mod init github.com/deamondev/gossip-glomers-tutorial/broadcast-3a
 ❯ go work use ./broadcast-3a
 ```
 
