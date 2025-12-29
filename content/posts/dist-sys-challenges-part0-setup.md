@@ -28,7 +28,7 @@ understand what needs to be done before you start looking at solutions.
 ## Why golang?
 
 Mainly because there is an [official maelstrom package](https://pkg.go.dev/github.com/jepsen-io/maelstrom/demo/go) and I
-quite like golang for writing such kind of a software. I'd most likely opt for [gleam](https://gleam.run) if gleam 
+quite like golang for writing such kind of a software. I'd most likely opt for [gleam](https://gleam.run) (or Java) if any of them 
 had such a one.
 
 ## What is maelstrom?
