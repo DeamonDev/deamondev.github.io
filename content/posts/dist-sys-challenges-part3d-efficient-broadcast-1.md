@@ -96,19 +96,6 @@ We declare `n12` to be *master* node, altough maybe better name might be *centra
 ### broadcast-3d/server.go
 
 ```go
-package main
-
-import (
-	"context"
-	"encoding/json"
-	"log"
-	"math/rand"
-	"sync"
-	"time"
-
-	maelstrom "github.com/jepsen-io/maelstrom/demo/go"
-)
-
 type Server struct {
 	node   *maelstrom.Node
 	nodeID string
@@ -122,6 +109,40 @@ type Server struct {
 	role string
 }
 
+func (s *Server) topologyHandler(msg maelstrom.Message) error {
+	s.mu.Lock()
+	defer s.mu.Unlock()
+
+	var body TopologyMessage
+	if err := json.Unmarshal(msg.Body, &body); err != nil {
+		return err
+	}
+
+	// We ignore topology sent from maelstrom's controller, at least for now
+	topologyMessageResponse := TopologyMessageResponse{
+		Type: "topology_ok",
+	}
+
+	log.Printf("Received topology information from controller: %v", body.Topology)
+
+	s.topology = topology
+	s.masterNode = masterNode
+
+	log.Printf("Using topology: %v, central node: %s", s.topology, s.masterNode)
+
+	if s.nodeID == masterNode {
+		s.role = "LEADER"
+	} else {
+		s.role = "FOLLOWER"
+	}
+
+	return s.node.Reply(msg, topologyMessageResponse)
+}
+```
+
+...
+
+```go
 type BroadcastMessage struct {
 	Type    string `json:"type"`
 	Message int    `json:"message"`
@@ -157,38 +178,11 @@ type ReadMessageResponse struct {
 	Type     string `json:"type"`
 	Messages []int  `json:"messages"`
 }
+```
 
-func NewServer(n *maelstrom.Node) *Server {
-	s := &Server{node: n, messages: make(map[int]struct{})}
+...
 
-	s.node.Handle("init", s.initHandler)
-	s.node.Handle("broadcast", s.broadcastHandler)
-	s.node.Handle("broadcast_internal", s.broadcastInternalHandler)
-	s.node.Handle("read", s.readHandler)
-	s.node.Handle("topology", s.topologyHandler)
-
-	// no-op handlers
-	s.node.Handle("broadcast_ok", s.noOpHandler)
-	s.node.Handle("broadcast_internal_ok", s.noOpHandler)
-
-	return s
-}
-
-func (s *Server) initHandler(msg maelstrom.Message) error {
-	s.mu.Lock()
-	defer s.mu.Unlock()
-
-	var body maelstrom.InitMessageBody
-	if err := json.Unmarshal(msg.Body, &body); err != nil {
-		return err
-	}
-
-	s.nodeID = body.NodeID
-	log.Printf("Node id set to: %s", s.nodeID)
-
-	return nil
-}
-
+```go
 func (s *Server) broadcastHandler(msg maelstrom.Message) error {
 	s.mu.Lock()
 	defer s.mu.Unlock()
@@ -261,85 +255,14 @@ func (s *Server) broadcastInternalHandler(msg maelstrom.Message) error {
 
 	return s.node.Reply(msg, broadcastInternalMessageResponse)
 }
-
-func broadcastMessageToPeer(node *maelstrom.Node, peerID string, body BroadcastInternalMessage) {
-	backoff := time.Millisecond
-	for {
-		ctx, cancel := context.WithTimeout(context.Background(), time.Second)
-		_, err := node.SyncRPC(ctx, peerID, body)
-		cancel()
-
-		if err == nil {
-			return
-		}
-
-		time.Sleep(backoff + time.Duration(rand.Intn(50))*time.Millisecond)
-		if backoff < 500*time.Millisecond {
-			backoff *= 2
-		}
-	}
-}
-
-func (s *Server) noOpHandler(maelstrom.Message) error {
-	return nil
-}
-
-func (s *Server) readHandler(msg maelstrom.Message) error {
-	var body ReadMessage
-	if err := json.Unmarshal(msg.Body, &body); err != nil {
-		return err
-	}
-
-	s.mu.Lock()
-	defer s.mu.Unlock()
-
-	messages := make([]int, 0, len(s.messages))
-	for m := range s.messages {
-		messages = append(messages, m)
-	}
-
-	readMessageResponse := ReadMessageResponse{
-		Type:     "read_ok",
-		Messages: messages,
-	}
-
-	return s.node.Reply(msg, readMessageResponse)
-}
-
-func (s *Server) topologyHandler(msg maelstrom.Message) error {
-	s.mu.Lock()
-	defer s.mu.Unlock()
-
-	var body TopologyMessage
-	if err := json.Unmarshal(msg.Body, &body); err != nil {
-		return err
-	}
-
-	// We ignore topology sent from maelstrom's controller, at least for now
-	topologyMessageResponse := TopologyMessageResponse{
-		Type: "topology_ok",
-	}
-
-	log.Printf("Received topology information from controller: %v", body.Topology)
-
-	s.topology = topology
-	s.masterNode = masterNode
-
-	log.Printf("Using topology: %v, central node: %s", s.topology, s.masterNode)
-
-	if s.nodeID == masterNode {
-		s.role = "LEADER"
-	} else {
-		s.role = "FOLLOWER"
-	}
-
-	return s.node.Reply(msg, topologyMessageResponse)
-}
-
-func (s *Server) Run() error {
-	return s.node.Run()
-}
 ```
+
+...
+Below I paste the visual representation of the case in which *controller* sends `broadcast` message to *follower* node:
+
+![Maelstrom](/images/broadcast3d-follower-case.drawio.svg)
+
+
 
 ## Running workload
 
