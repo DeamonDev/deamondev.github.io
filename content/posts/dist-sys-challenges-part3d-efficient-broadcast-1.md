@@ -95,6 +95,9 @@ We declare `n12` to be *master* node, altough maybe better name might be *centra
 
 ### broadcast-3d/server.go
 
+I think at this moment the ideas are being condensed to the point I would rather like to split out server code into 
+more easily explainable chunks. In first such a chunk I will explain how we handle topology in nodes.
+
 ```go
 type Server struct {
 	node   *maelstrom.Node
@@ -139,8 +142,156 @@ func (s *Server) topologyHandler(msg maelstrom.Message) error {
 	return s.node.Reply(msg, topologyMessageResponse)
 }
 ```
+To our Server struct I added new two fields:
 
-...
+* masterNode - who is master node in the cluster?
+* role - am I leader or follower in the cluster?
+
+I also set topology to be the hardcoded one which I already presented. The determination of role is just
+simple check whether node id is equal to the (hardcoded) master node id. 
+
+#### Aside note from the ivory tower of functional programming
+
+
+![Maelstrom](/images/ivorytower.png)
+
+*Welcome brave ones!
+After reading this article, our council decided to take the floor and explain why we believe that
+functional languages are better suited to building complex distributed systems....*
+
+After careful thought I decided to skip the letter from mages and just present my own take.
+I promised myself I would finish with academy, and I'd better stick to it.
+
+I think this is the right place to share my thoughts on why I would not choose Go for writing a complex distributed system.
+Much as I like Go for its ability to compile into a statically linked binary and its excellent standard library, I think 
+its type system is too weak. Recall two new fields I described above, that is masterNode and role fields. What if we would
+like to support some kind of operation which should be performed only for leader? With such a role field it would look like this
+
+```go
+func (s *Server) someLeaderOnlyFoo() error {
+    if s.role == "FOLLOWER" {
+        return errors.New("That operation should be invoked only on LEADER, but it was invoked on FOLLOWER")
+    } else {
+        // perform some actual job...
+        // ...
+        return nil
+    }
+}
+```
+
+I think you know what I mean? There is slogan, quite popular in the world of functional programming which is 
+*make illegal states unrepresentable*. Let me present how we might model it in languages with stronger type
+system. What about java and rust? 
+
+##### Java's take
+
+In modern Java, by which I mean 17+ one can use *sealed interfaces* to model server role without holding internal
+state variable.
+
+```java
+public sealed interface Server
+        permits LeaderServer, FollowerServer {
+
+    String nodeId();
+}
+
+public final class LeaderServer implements Server {
+
+  private final String nodeId;
+
+  public LeaderServer(String nodeId) {
+    this.nodeId = nodeId;
+  }
+
+  @Override
+  public String nodeId() {
+    return nodeId;
+  }
+
+  public void someLeaderOnlyFoo() {
+    // actual job
+  }
+}
+
+public final class FollowerServer implements Server {
+
+  private final String nodeId;
+
+  public FollowerServer(String nodeId) {
+    this.nodeId = nodeId;
+  }
+
+  @Override
+  public String nodeId() {
+    return nodeId;
+  }
+}
+```
+
+What we gained? There are some gains
+
+* follower is not able to invoke leader-only methods
+* no runtime check
+* clear domain model
+
+Of course we may still get this in golang (if we loosen the interface being *sealed*). But the thing
+is - it is not 
+[idiomatic go](https://go.dev/doc/effective_go) then. In my impression go is closer in style to C language. I have to admit such a minmalism of go has some
+kind of a charm and I like it when writing "ops"-software, cli tools, ... For complex backend systems? Definiely too weak
+type system for me. Sorry. But who cares what I prefer, anyway?
+
+##### Rust's take
+
+What about going even further and take an advantage of rust's move semantics in the incarnation of 
+[typestate pattern](https://cliffle.com/blog/rust-typestate/)? 
+
+
+```rust
+struct Leader;
+struct Follower;
+
+struct Server<State> {
+    node_id: String,
+    _state: std::marker::PhantomData<State>,
+}
+
+impl Server<Follower> {
+    fn new_follower(node_id: String) -> Self {
+        Server {
+            node_id,
+            _state: std::marker::PhantomData,
+        }
+    }
+    
+    fn promote(self) -> Server<Leader> {
+        Server {
+            node_id: self.node_id,
+            _state: std::marker::PhantomData,
+        }
+    }
+}
+
+impl Server<Leader> {
+    fn some_leader_only_foo(&self) {
+        // actual job
+    }
+    
+    fn demote(self) -> Server<Follower> {
+        Server {
+            node_id: self.node_id,
+            _state: std::marker::PhantomData,
+        }
+    }
+}
+
+
+```
+
+
+##### Conclusion of the letter
+
+I would like to conclude this section by stating that I do not thik that the main problems in 
+distributed systems are caused by better or worse domain modeling.
 
 ```go
 type BroadcastMessage struct {
@@ -180,7 +331,8 @@ type ReadMessageResponse struct {
 }
 ```
 
-...
+I introduce new type of message being passed from our nodes to other nodes which is internal broadcast message.
+Now I will do my best to explain why this new kind of message is a thing. 
 
 ```go
 func (s *Server) broadcastHandler(msg maelstrom.Message) error {

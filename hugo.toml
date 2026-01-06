@@ -8,6 +8,8 @@ theme = 'm10c'
     dir = ':cacheDir/images'
 
 [markup]
+  [markup.tableOfContents]
+    endLevel = 5
   [markup.highlight]
     style = 'onedark'
   [markup.goldmark]
