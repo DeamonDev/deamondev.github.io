@@ -153,7 +153,7 @@ simple check whether node id is equal to the (hardcoded) master node id.
 #### Aside note from the ivory tower of functional programming
 
 
-![Maelstrom](/images/ivorytower.png)
+![Maelstrom](/images/ivorytowerv2.png)
 
 *Welcome brave ones!
 After reading this article, our council decided to take the floor and explain why we believe that
@@ -290,8 +290,12 @@ impl Server<Leader> {
 
 ##### Conclusion of the letter
 
-I would like to conclude this section by stating that I do not thik that the main problems in 
-distributed systems are caused by better or worse domain modeling.
+In conclusion, I would like to state that I do not believe the main problems in distributed systems
+are caused by better or worse domain modelling. In practice, the main challenges arise from handling
+partial failures, retries, timeouts, recovery and the discrepancy between local correctness and the 
+behaviour of the global system.
+
+Let us come back to the more imperative earth...
 
 ```go
 type BroadcastMessage struct {
