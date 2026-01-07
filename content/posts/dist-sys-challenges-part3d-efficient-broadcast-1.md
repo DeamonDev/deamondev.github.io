@@ -231,14 +231,17 @@ public final class FollowerServer implements Server {
 What we gained? There are some gains
 
 * follower is not able to invoke leader-only methods
+* exhaustive compile time checks
 * no runtime check
 * clear domain model
 
-Of course we may still get this in golang (if we loosen the interface being *sealed*). But the thing
+Of course we may still get this in golang (if we loosen the interface being *sealed* and exhaustiveness of switch expressions). But the thing
 is - it is not 
 [idiomatic go](https://go.dev/doc/effective_go) then. In my impression go is closer in style to C language. I have to admit such a minmalism of go has some
-kind of a charm and I like it when writing "ops"-software, cli tools, ... For complex backend systems? Definiely too weak
-type system for me. Sorry. But who cares what I prefer, anyway?
+kind of a charm and I like it when writing *ops kind* of software, cli tools, terminal UIs, ... For complex backend systems? Definiely too weak
+type system for me. Sorry. 
+
+*But who cares what I prefer, anyway?*
 
 ##### Rust's take
 
@@ -283,9 +286,27 @@ impl Server<Leader> {
         }
     }
 }
-
-
 ```
+
+Here I define two roles: `Leader` and `Follower`. These are just [marker types](https://doc.rust-lang.org/std/marker/index.html).
+The generic Server<State> just holds common data - the id of the node and *phantom type* _state to track
+the server's role *at the type level*. Note that one is not able to create Leader from the void. 
+It may be created only by promoting Follower via Follower's promote method. 
+
+>But wait. I can define the same in Java, probably after fighting with type erasure.
+
+Yes. But there is more. Consider this code snippet:
+
+```rust
+let follower = Server::new_follower("n1".to_string());
+let leader = follower.promote(); // follower is moved, cannot use anymore
+// follower.some_method() -> COMPILE ERROR
+```
+
+Since Rust's type system is [affine](https://en.wikipedia.org/wiki/Substructural_type_system) by default and enforces move semantics it ensures that old states
+cannot be reused after a transition. In Java the original variable would still exists and could be used after
+the method call. The compiler does not prevent misuse. You could accidentally call a “follower-only” method on
+what conceptually is no longer a follower.
 
 
 ##### Conclusion of the letter
