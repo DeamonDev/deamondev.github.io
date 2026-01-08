@@ -107,9 +107,9 @@ type Server struct {
 	messages map[int]struct{}
 
 	topology   map[string][]string
-	masterNode string
+	masterNode string ⓿
 
-	role string
+	role string ❶
 }
 
 func (s *Server) topologyHandler(msg maelstrom.Message) error {
@@ -133,7 +133,7 @@ func (s *Server) topologyHandler(msg maelstrom.Message) error {
 
 	log.Printf("Using topology: %v, central node: %s", s.topology, s.masterNode)
 
-	if s.nodeID == masterNode {
+	if s.nodeID == masterNode { ❷
 		s.role = "LEADER"
 	} else {
 		s.role = "FOLLOWER"
@@ -144,11 +144,11 @@ func (s *Server) topologyHandler(msg maelstrom.Message) error {
 ```
 To our Server struct I added new two fields:
 
-* masterNode - who is master node in the cluster?
-* role - am I leader or follower in the cluster?
+* masterNode ⓿  - who is master node in the cluster?
+* role ❶ - am I leader or follower in the cluster?
 
 I also set topology to be the hardcoded one which I already presented. The determination of role is just
-simple check whether node id is equal to the (hardcoded) master node id. 
+simple check ❷ whether node id is equal to the (hardcoded) master node id. 
 
 #### Aside note from the ivory tower of functional programming
 
@@ -164,8 +164,9 @@ I promised myself I would finish with academy, and I'd better stick to it.
 
 I think this is the right place to share my thoughts on why I would not choose Go for writing a complex distributed system.
 Much as I like Go for its ability to compile into a statically linked binary and its excellent standard library, I think 
-its type system is too weak. Recall two new fields I described above, that is masterNode and role fields. What if we would
-like to support some kind of operation which should be performed only for leader? With such a role field it would look like this
+its type system is too weak. Recall two new fields I described above, that is `masterNode` and `role` fields. What if we would
+like to support some kind of operation which should be performed only on leader? With the current implementation, the aforementioned
+code would like like this:
 
 ```go
 func (s *Server) someLeaderOnlyFoo() error {
@@ -232,7 +233,6 @@ What we gained? There are some gains
 
 * follower is not able to invoke leader-only methods
 * exhaustive compile time checks
-* no runtime check
 * clear domain model
 
 Of course we may still get this in golang (if we loosen the interface being *sealed* and exhaustiveness of switch expressions). But the thing
@@ -289,13 +289,13 @@ impl Server<Leader> {
 ```
 
 Here I define two roles: `Leader` and `Follower`. These are just [marker types](https://doc.rust-lang.org/std/marker/index.html).
-The generic Server<State> just holds common data - the id of the node and *phantom type* _state to track
-the server's role *at the type level*. Note that one is not able to create Leader from the void. 
-It may be created only by promoting Follower via Follower's promote method. 
+The generic Server<State> just holds common data - the id of the node and *phantom type* `_state` to track
+the server's role *at the type level*. Note that one is not able to create `Leader` from the void. 
+It may be created only by promoting `Follower` via `Follower`'s `promote` method. 
 
->But wait. I can define the same in Java, probably after fighting with type erasure.
+>But wait. I can define the same in Java, probably after fighting with type erasure for a while.
 
-Yes. But there is more. Consider this code snippet:
+You're correct then. But there is more. Consider this code snippet:
 
 ```rust
 let follower = Server::new_follower("n1".to_string());
@@ -303,7 +303,7 @@ let leader = follower.promote(); // follower is moved, cannot use anymore
 // follower.some_method() -> COMPILE ERROR
 ```
 
-Since Rust's type system is [affine](https://en.wikipedia.org/wiki/Substructural_type_system) by default and enforces move semantics it ensures that old states
+Since Rust's type system is [affine](https://en.wikipedia.org/wiki/Substructural_type_system) by default and enforces [move semantics](https://doc.rust-lang.org/rust-by-example/scope/move.html) it ensures that old states
 cannot be reused after a transition. In Java the original variable would still exists and could be used after
 the method call. The compiler does not prevent misuse. You could accidentally call a “follower-only” method on
 what conceptually is no longer a follower.
@@ -356,8 +356,8 @@ type ReadMessageResponse struct {
 }
 ```
 
-I introduce new type of message being passed from our nodes to other nodes which is internal broadcast message.
-Now I will do my best to explain why this new kind of message is a thing. 
+I introduce a new type of message being passed from our nodes to other nodes which is *internal broadcast message*.
+The rest of the messages remain the same.
 
 ```go
 func (s *Server) broadcastHandler(msg maelstrom.Message) error {

@@ -130,11 +130,11 @@ func (n *Node) ID() string
 This identifier is valid only after the `init` message has been received.
 
 **Remark:** It should be noted that there is no network stack involved (counting loopback interface). Communication is
-based solely on sending JSON messages using raw syscalls using relevant file descriptions of internal OS processes.
+based solely on sending JSON messages using raw syscalls using relevant file descriptors of internal OS processes.
 
 ## Project setup
 
-Enough talk. Let's start here. The plan is to create new golang project using go's workspace setup. After creating a new
+Enough talking`. Let's start here. The plan is to create new golang project using go's workspace setup. After creating a new
 directory and initializing git repo, let's create our [workspace](https://go.dev/doc/tutorial/workspaces) at the root of this directory:
 
 ```shell
