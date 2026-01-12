@@ -503,7 +503,7 @@ INFO [2026-01-12 15:32:45,100] jepsen test runner - jepsen.core {:perf {:latency
                  :msgs-per-op 25.219414},
        :valid? true},
             ...
-                            :lost (),
+            :lost (),
             :stable-count 999,
             :stale-count 995,
             :stale (0
