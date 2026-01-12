@@ -357,7 +357,7 @@ type ReadMessageResponse struct {
 ```
 
 I introduce a new type of message being passed from our nodes to other nodes which is *internal broadcast message*.
-The rest of the messages remain the same.
+The rest of the messages remains the same.
 
 ```go
 func (s *Server) broadcastHandler(msg maelstrom.Message) error {
@@ -434,16 +434,32 @@ func (s *Server) broadcastInternalHandler(msg maelstrom.Message) error {
 }
 ```
 
-...
-Below I paste the visual representation of the case in which *controller* sends `broadcast` message to *follower* node:
+Dragons be here. As I already mentioned above, to solve this challenge I've introduced new message type which is 
+`internal_broadcast` message. When the node receives this kind of message, then the node just propagate this message
+to its peers without any other logic. Plain and easy. I introduced this new kind of message because adding too much 
+logic in `broadcast` message is not good idea by the reason the `broadcast` messages are also sent from controller
+nodes to nodes. When trying to accumulate too much logic into message which we dont control ourselves, the code is
+becoming harder and harder to conceptualize, since it has different *semantics* depending on *who* called the message.
+
+>What about `broadcast` then and why exactly we need this new message? 
+
+The whole logic sits in `broadcast` message handler. As before we check if message was already seen by our node. In the
+interesting case when the message is seen by the very first time, the first thing the node is doing is sending 
+internal broadcast messages to all its peers. So the messages start propagating on the grid in some places. Then, 
+the node checks if it is follower of the cluster. If it is then it realizes its peers are not sufficient to broadcast
+message to whole cluster. So what is the natural thing to do? Drums rolling... I think you've got it, it just sends
+internal broadcast message to the master (central) node `n12`. Then we have guarantee message eventually converges
+everywhere. In fact it would suffice to just re-transmit message to master node and this first step of sending internal
+brodcast messasges to node's peers is kind of an optimization. 
+
+Below I paste the visual representation of the case in which *controller* sends `broadcast` message to *follower* node. 
+It shows how the `internal_broadcast` messages flows:
 
 ![Maelstrom](/images/broadcast3d-follower-case.drawio.svg)
 
-
-
 ## Running workload
 
-Let us see if...
+Let us see if messages propagate in the cluster properly:
 ```sh
 ❯ make run
 go build -o ~/go/bin/maelstrom-broadcast-3d ./broadcast-3d
@@ -452,7 +468,69 @@ go build -o ~/go/bin/maelstrom-broadcast-3d ./broadcast-3d
 
 ```clojure
 ...
+INFO [2026-01-12 15:32:44,575] jepsen test runner - jepsen.core Analyzing...
+INFO [2026-01-12 15:32:45,050] jepsen test runner - jepsen.core Analysis complete
+INFO [2026-01-12 15:32:45,074] jepsen results - jepsen.store Wrote /home/deamondev/software_development/tutorials/gossip-glomers-tutorial/store/broadcast/20260112T153211.516+0100/results.edn
+INFO [2026-01-12 15:32:45,100] jepsen test runner - jepsen.core {:perf {:latency-graph {:valid? true},
+        :rate-graph {:valid? true},
+        :valid? true},
+ :timeline {:valid? true},
+ :exceptions {:valid? true},
+ :stats {:valid? true,
+         :count 1978,
+         :ok-count 1978,
+         :fail-count 0,
+         :info-count 0,
+         :by-f {:broadcast {:valid? true,
+                            :count 999,
+                            :ok-count 999,
+                            :fail-count 0,
+                            :info-count 0},
+                :read {:valid? true,
+                       :count 979,
+                       :ok-count 979,
+                       :fail-count 0,
+                       :info-count 0}}},
+ :availability {:valid? true, :ok-fraction 1.0},
+ :net {:all {:send-count 53940,
+             :recv-count 53940,
+             :msg-count 53940,
+             :msgs-per-op 27.26997},
+       :clients {:send-count 4056, :recv-count 4056, :msg-count 4056},
+       :servers {:send-count 49884,
+                 :recv-count 49884,
+                 :msg-count 49884,
+                 :msgs-per-op 25.219414},
+       :valid? true},
+            ...
+                            :lost (),
+            :stable-count 999,
+            :stale-count 995,
+            :stale (0
+                    1
+                    2
+                    3
+                    4
+                    5
+                    ...
+                    993
+                    994),
+            :never-read-count 0,
+            :stable-latencies {0 0,
+                               0.5 379,
+                               0.95 478,
+                               0.99 494,
+                               1 498},
+            :attempt-count 999,
+            :never-read (),
+            :duplicated {}},
+ :valid? true}
 
+
+Everything looks good! ヽ(‘ー`)ノ
 ```
+
+It seems we're good. The `msgs-per-op` is `27.26997` which not exceeds `30`. Median latency id `379` which is below `400` and
+max latency is `498` which is below `600`.
 
 ## Summary
