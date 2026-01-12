@@ -153,7 +153,7 @@ simple check ❷ whether node id is equal to the (hardcoded) master node id.
 #### Aside note from the ivory tower of functional programming
 
 
-![Maelstrom](/images/ivorytowerv2.png)
+![Maelstrom](/images/ivorytowerv3.png)
 
 *Welcome brave ones!
 After reading this article, our council decided to take the floor and explain why we believe that
