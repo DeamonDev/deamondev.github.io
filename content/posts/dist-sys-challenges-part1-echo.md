@@ -236,7 +236,7 @@ func main() {
 
 ```
 
-## Double check of maelstrom specification via tracing of linux syscalls
+## Double check of maelstrom specification by tracing linux syscalls
 
 In the previous part, I provided a rough description of the Maelstrom specification. In particular, I mentioned that 
 nodes communicate via their STDIN and STDOUT streams. But what about a double check?
