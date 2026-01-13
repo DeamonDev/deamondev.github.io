@@ -120,7 +120,7 @@ A character \(\lambda: T \rightarrow \mathbb{C}^*\) corresponds to an element of
 **Exercise.** Apply Berline-Vergne theorem to prove: \[\sum_{k=0}^n {n \choose k} (-1)^{m+k}k^m = \begin{cases} 0, &
 \text{for } m < n, \\ n!, & \text{for } m = n. \end{cases} \]
 
-**Hint.** Consider natural action of \(T := (\mathbb{C})^{n+1}\) on \(M := \mathbb{P}^n\). The fixed point set is
+**Hint.** Consider natural action of \(T := \mathbb{C}^{n+1}\) on \(M := \mathbb{P}^n\). The fixed point set is
 discrete and consists of naturally defined coordinate lines \(M^T = \{l_0,l_1,\dots,l_n\}\). You should decompose tangent space 
 to \(l_i\) in \(M\) into one-dimensional representations. The Euler classes then splits easily. 
 
