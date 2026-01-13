@@ -142,12 +142,12 @@ func (s *Server) topologyHandler(msg maelstrom.Message) error {
 	return s.node.Reply(msg, topologyMessageResponse)
 }
 ```
-To our Server struct I added new two fields:
+To our `Server` struct I added new two fields:
 
-* masterNode ⓿  - who is master node in the cluster?
-* role ❶ - am I leader or follower in the cluster?
+* `masterNode` ⓿  - who is master node in the cluster?
+* `role` ❶ - am I leader or follower in the cluster?
 
-I also set topology to be the hardcoded one which I already presented. The determination of role is just
+I also set topology to be the hardcoded one which I already presented. The determination of the `role` is just
 simple check ❷ whether node id is equal to the (hardcoded) master node id. 
 
 #### Aside note from the ivory tower of functional programming
@@ -173,15 +173,19 @@ func (s *Server) someLeaderOnlyFoo() error {
     if s.role == "FOLLOWER" {
         return errors.New("That operation should be invoked only on LEADER, but it was invoked on FOLLOWER")
     } else {
-        // perform some actual job...
+        // perform actual job...
         // ...
         return nil
     }
 }
 ```
 
-I think you know what I mean? There is slogan, quite popular in the world of functional programming which is 
-*make illegal states unrepresentable*. Let me present how we might model it in languages with stronger type
+I think you know what I mean? There is a slogan, quite popular in the world of functional programming which is 
+*make illegal states unrepresentable*. The situation is even more problematic because many distributed systems introduce 
+new roles. An example of this is [ZooKeeper's observer role](https://zookeeper.apache.org/doc/r3.4.13/zookeeperObservers.html) 
+or [etcd's learner role](https://etcd.io/docs/v3.3/learning/learner/).
+
+Let me present how we might model it in languages with stronger type
 system. What about java and rust? 
 
 ##### Java's take
@@ -328,8 +332,8 @@ type BroadcastMessageResponse struct {
 	Type string `json:"type"`
 }
 
-type BroadcastInternalMessage struct {
-	Type    string `json:"type"`
+type BroadcastInternalMessage struct { ⓿
+    Type    string `json:"type"`
 	Message int    `json:"message"`
 }
 
@@ -356,7 +360,7 @@ type ReadMessageResponse struct {
 }
 ```
 
-I introduce a new type of message being passed from our nodes to other nodes which is *internal broadcast message*.
+I introduce a new type of message being passed from our nodes to other nodes which is *internal broadcast message* ⓿.
 The rest of the messages remains the same.
 
 ```go
@@ -386,10 +390,10 @@ func (s *Server) broadcastHandler(msg maelstrom.Message) error {
 	}
 
 	for _, peerID := range s.topology[s.nodeID] {
-		go broadcastMessageToPeer(s.node, peerID, broadcastInternalMessage)
-	}
+		go broadcastMessageToPeer(s.node, peerID, broadcastInternalMessage) ⓿
+}
 
-	if s.role == "FOLLOWER" {
+	if s.role == "FOLLOWER" { ❶
 		// Broadcast to the master node
 		go broadcastMessageToPeer(s.node, s.masterNode, broadcastInternalMessage)
 	}
@@ -435,22 +439,22 @@ func (s *Server) broadcastInternalHandler(msg maelstrom.Message) error {
 ```
 
 Dragons be here. As I already mentioned above, to solve this challenge I've introduced new message type which is 
-`internal_broadcast` message. When the node receives this kind of message, then the node just propagate this message
+`internal_broadcast` message. When the node receives this kind of message, then the node just propagates this message
 to its peers without any other logic. Plain and easy. I introduced this new kind of message because adding too much 
-logic in `broadcast` message is not good idea by the reason the `broadcast` messages are also sent from controller
+logic in `broadcast` message is not a good idea by the reason the `broadcast` messages are also sent from controller
 nodes to nodes. When trying to accumulate too much logic into message which we dont control ourselves, the code is
 becoming harder and harder to conceptualize, since it has different *semantics* depending on *who* called the message.
 
 >What about `broadcast` then and why exactly we need this new message? 
 
-The whole logic sits in `broadcast` message handler. As before we check if message was already seen by our node. In the
+The whole logic sits in `broadcast` message handler. As before we check if our node already saw message. In the
 interesting case when the message is seen by the very first time, the first thing the node is doing is sending 
-internal broadcast messages to all its peers. So the messages start propagating on the grid in some places. Then, 
-the node checks if it is follower of the cluster. If it is then it realizes its peers are not sufficient to broadcast
+internal broadcast messages to all its peers ⓿. So the messages start propagating on the grid in some places. Then, 
+the node checks if it is a follower of the cluster ❶. If it is then it realizes its peers are not enough to broadcast
 message to whole cluster. So what is the natural thing to do? Drums rolling... I think you've got it, it just sends
-internal broadcast message to the master (central) node `n12`. Then we have guarantee message eventually converges
-everywhere. In fact it would suffice to just re-transmit message to master node and this first step of sending internal
-brodcast messasges to node's peers is kind of an optimization. 
+internal broadcast message to the master (central) node `n12` ❷. Then we have a guarantee message eventually converges
+everywhere. In fact it would suffice to just re-transmit a message to master node, and this first step of sending internal
+broadcast messages to the node's peers is kind of an optimization. 
 
 Below I paste the visual representation of the case in which *controller* sends `broadcast` message to *follower* node. 
 It shows how the `internal_broadcast` messages flows:
