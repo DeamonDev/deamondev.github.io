@@ -459,7 +459,7 @@ broadcast messages to the node's peers is kind of an optimization.
 Below I paste the visual representation of the case in which *controller* sends `broadcast` message to *follower* node. 
 It shows how the `internal_broadcast` messages flows:
 
-![Maelstrom](/images/broadcast3d-follower-case.drawio.svg)
+![Maelstrom](/images/broadcast3d-follower-casev2.drawio.svg)
 
 ## Running workload
 
