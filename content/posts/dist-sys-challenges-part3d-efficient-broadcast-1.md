@@ -7,7 +7,7 @@ tags = ['distributed systems', 'broadcast', 'fault tolerance']
 toc = true
 +++
 
-## Efficient Broadcast Challenge
+## Efficient Broadcast Challenge (Part I)
 
 Things are getting interesting! This is the first part of the efficiency challenge, which builds on the fault-tolerant broadcast
 challenge. The workload is becoming more rigorous:
