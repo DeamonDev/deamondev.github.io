@@ -5,6 +5,8 @@ title = 'Solving gossip-glomers distributed systems challenges: efficient broadc
 categories = ['software-development', 'distributed-systems']
 tags = ['distributed systems', 'broadcast', 'fault tolerance']
 toc = true
+[params]
+math = true
 +++
 
 ## Efficient Broadcast Challenge (Part I)
@@ -91,6 +93,21 @@ We declare `n12` to be *master* node, altough maybe better name might be *centra
 
 ![Maelstrom](/images/broadcast3d-network.drawio.svg)
 
+Why do I think that subgraph of full 5x5 grid is *kinda special*? Denote by \(G\) the full \(5\times 5\) grid graph and let 
+\(H\subseteq G\) be any (directed) subgraph of \(G\). For any given vertex \(v \in H\) let \(\operatorname{deg}^+(v)\) be 
+the number of *outgoing edges from* \(v\). Let us also take any convex function \(f : \mathbb{N} \rightarrow \mathbb{R}\). We're interested
+on the class of directed subgraphs of \(G\) which contain every vertex of \(G\). For any such subgraph \(H\) we take vector of numbers
+\[ \vec{v}(H) := (\operatorname{deg}^+(v_1), \dots, \operatorname{deg}^+(v_{25})) \in \mathbb{Z}^{\oplus 25} \]
+
+My claim is that the spanning tree rooted at grid center minimizes the number: \[\sum_{k=1}^{25} f(\operatorname{deg}^+(v_k))\]
+In case \(f \colon x \mapsto x^2 \) then this number is just square length of vector \(\vec{v}(H)\). My claim is that the spanning tree
+rooted at the grid center node minimizes this number for every convex function. So our choosen subgraph above is unique (up to grid automorphism) and
+minimizes these functionals. Using standard combinatorial notation, our vector is as follows \[(4^1,3^2,2^2,1^{10},0^{10})\] , hence its square length is:
+\[ 4^2+2\cdot 3^2+2\cdot 2^2+10\cdot 1^2+10\cdot 0^2 = 52\]
+
+The proof is rather straightforward. Dividing the full grid into chunks and analyzing we need at least one node with outgoing degree 4. Then analyzing that
+we need at least two outgoing degree 3 nodes (if we demanded less, then at least an additional one 4 out-degree would need to exist which by function
+concativity increase the number in question) and so on... Of course the devil lies in details.
 
 
 ### broadcast-3d/server.go

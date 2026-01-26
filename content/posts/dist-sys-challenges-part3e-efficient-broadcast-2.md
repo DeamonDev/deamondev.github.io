@@ -5,7 +5,7 @@ title = 'Solving gossip-glomers distributed systems challenges: efficient broadc
 categories = ['software-development', 'distributed-systems']
 tags = ['distributed systems', 'broadcast', 'fault tolerance']
 toc = true
-++++++
++++
 
 ## Efficient Broadcast Challenge (Part II)
 
@@ -85,6 +85,11 @@ func (b *Batcher) Close() {
 	close(b.flushChan)
 }
 ```
+
+...
+
+![Maelstrom](/images/broadcast3e-batcher.drawio(3).svg)
+
 
 ### broadcast-3e/server.go
 
