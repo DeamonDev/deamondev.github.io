@@ -9,6 +9,18 @@ toc = true
 
 ## Efficient Broadcast Challenge (Part II)
 
+Here we are - the last part of the whole broadcast series. This is second part of the efficiency challenge, which builds
+on the previous part. With the same node count of `25` and message delay of `100ms`, the challenge is to achieve
+the following performance metrics:
+
+* `msgs-per-op` should be below `20`
+* `median latency` should be below `1` second
+* `maximum latency` should be below `2` seconds
+
+In other words, we handled median and maximum latencies for lower messages per op during execution of the same workflow.
+Let me think for a moment...Since I can sacrifice latency in exchange for sending fewer messages, maybe it would be a good
+idea to batch messages before sending them and send them in the aforementioned batches?
+
 ## Setup
 
 Run these commands to bootstrap this part:
@@ -24,6 +36,11 @@ At this point you only should set `MODULE` to be `broadcast-3e` and `WORKLOAD` p
 for the details).
 
 ## Code
+
+As I mentioned above, the whole idea is to add batching mechanism to our node. For doing so I'll define new component which
+I call *batcher*. Its whole role is just batching messages sent by our node to another nodes. The batcher has embedded ticker
+which ticks every configured time duration. After tick, the batched messages are transformed into `FlushEvent`'s which are then
+handled by the node internal handler.
 
 ### broadcast-3e/batcher.go
 
