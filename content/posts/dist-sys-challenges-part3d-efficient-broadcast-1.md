@@ -107,7 +107,7 @@ minimizes these functionals. Using standard combinatorial notation, our vector i
 
 The proof is rather straightforward. Dividing the full grid into chunks and analyzing we need at least one node with outgoing degree 4. Then analyzing that
 we need at least two outgoing degree 3 nodes (if we demanded less, then at least an additional one 4 out-degree would need to exist which by function
-concativity increase the number in question) and so on... Of course the devil lies in details.
+concativity increase the number in question) and so on... Of course the devil lives in details.
 
 
 ### broadcast-3d/server.go

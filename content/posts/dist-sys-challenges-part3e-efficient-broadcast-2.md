@@ -53,19 +53,19 @@ import (
 	"time"
 )
 
-type Batcher struct {
+type Batcher struct { ⓿
 	mu        sync.Mutex
 	batches   map[string][]int
 	ticker    *time.Ticker
 	flushChan chan FlushEvent
 }
 
-type FlushEvent struct {
+type FlushEvent struct { ❶
 	PeerID   string
 	Messages []int
 }
 
-func NewBatcher(batchTimeout time.Duration) *Batcher {
+func NewBatcher(batchTimeout time.Duration) *Batcher { ❷
 	return &Batcher{
 		ticker:    time.NewTicker(batchTimeout),
 		batches:   make(map[string][]int),
@@ -77,25 +77,25 @@ func (b *Batcher) Run() {
 	for range b.ticker.C {
 		b.mu.Lock()
 		for peerID, messages := range b.batches {
-			if len(messages) > 0 {
+			if len(messages) > 0 { ❸
 				b.flushChan <- FlushEvent{
 					PeerID:   peerID,
 					Messages: messages,
 				}
 			}
 		}
-		b.batches = make(map[string][]int)
+		b.batches = make(map[string][]int) ❹
 		b.mu.Unlock()
 	}
 }
 
 func (b *Batcher) Add(peerID string, message int) {
 	b.mu.Lock()
-	b.batches[peerID] = append(b.batches[peerID], message)
+	b.batches[peerID] = append(b.batches[peerID], message) ❺
 	b.mu.Unlock()
 }
 
-func (b *Batcher) Close() {
+func (b *Batcher) Close() { ❻
 	log.Printf("Closing batcher")
 
 	b.ticker.Stop()
@@ -103,7 +103,19 @@ func (b *Batcher) Close() {
 }
 ```
 
-...
+The `Batcher` struct holds internal map of batched messages, where we batch array of messages (thst is, numbers)
+per each peer id of the node in question. There is also `ticker` and channel of `FlushEvent`'s which is channel of 
+communication of the batcher with the external node (in which the batcher is embedded on).
+
+The `FlushEvent` contains only info about the id of the peer and the batched messages. It is just plain data, which
+is meant to be *interpreted* somehow in consumers of the `flushChan`  channel. Such a separation of concerns is solid
+design choice, since it is easier to reason and test the code.
+
+In the constructor function we just configure the `batchTimeout` - the intuition is that when increasing this timeout, 
+we minimize the `msgs-per-op` cluster characteristic and increase overall latency of the system (and vice versa). I'll
+summarize the experiments at the very end of this article.
+
+Below is a diagram illustrating the described system:
 
 ![Maelstrom](/images/broadcast3e-batcher.drawio(3).svg)
 
