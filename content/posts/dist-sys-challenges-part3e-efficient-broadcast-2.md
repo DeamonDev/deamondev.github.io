@@ -111,13 +111,22 @@ The `FlushEvent` contains only info about the id of the peer and the batched mes
 is meant to be *interpreted* somehow in consumers of the `flushChan`  channel. Such a separation of concerns is solid
 design choice, since it is easier to reason and test the code.
 
-In the constructor function we just configure the `batchTimeout` - the intuition is that when increasing this timeout, 
-we minimize the `msgs-per-op` cluster characteristic and increase overall latency of the system (and vice versa). I'll
-summarize the experiments at the very end of this article.
+In the constructor function we just configure the `ticker` via `batchTimeout` duration period - the intuition is that when
+increasing this timeout, we minimize the `msgs-per-op` cluster characteristic and increase overall latency of the system 
+(and vice versa). I'll summarize the experiments at the very end of this article.
+
+The `Run` function is spawned as a separate goroutine in the node process and is supposed to work infinitedly.
+After the (already configured) `ticker` ticks, we range all the peers of the node and for each of them we seek for 
+batched messages. For each of such a batch, we send corresponding `FlushEvent` via `flushChan` channel. After that ceremony,
+we clear batches for given peer and iterate.
+
+The `Add` function is straighforward, we just append to array of batched messages.
+
+The `Close` method is used to clear allocated resources, that is to stop the `ticker` and close `flushChan` channel.
 
 Below is a diagram illustrating the described system:
 
-![Maelstrom](/images/broadcast3e-batcher.drawio(3).svg)
+![Maelstrom](/images/broadcast3e-batcher.drawio(4).svg)
 
 
 ### broadcast-3e/server.go
