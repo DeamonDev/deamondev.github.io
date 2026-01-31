@@ -555,3 +555,6 @@ It seems we're good. The `msgs-per-op` is `27.26997` which not exceeds `30`. Med
 max latency is `498` which is below `600`.
 
 ## Summary
+
+As you can see, optimising the code required effort on our part. At this point, we could feel that we were actually solving
+the problems of a distributed system. The final stage of our journey lay ahead of us.

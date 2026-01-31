@@ -384,7 +384,8 @@ We did it! Now the `msgs-per-op` is `5.441` which is much below `20`. Our stable
 
 ## Summary
 
-...
+We have reached the end of our adventure. I hope that my solutions will help someone else in solving an intriguing 
+gossip glomers challenge. Feel free to gossip about these solutions with your friends!
 
 ## Appendix – Impact of batch timeout parameter to cluster's characteristics
 
