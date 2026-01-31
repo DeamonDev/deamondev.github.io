@@ -11,11 +11,9 @@ programming and low-level tools for profiling Unix systems, particularly tools b
 https://ebpf.io/). One thing I try to do quite regularly is reading source code of [Apache Flink](https://flink.apache.org/),
 [Apache Kafka](https://kafka.apache.org/) or diving into JVM profiling/tuning.
 
-I am a heavy linux user since 2013. Currently I am using [Arch Linux](https://archlinux.org/) distribution (but glorying
-this particular distro gives me cringe). I use x86 Tuxedo's PC and I highly
-recommend [Tuxedo manufacture](https://www.tuxedocomputers.com/en).
+I use x86 Tuxedo's PC and I highly recommend [Tuxedo manufacture](https://www.tuxedocomputers.com/en).
 
-However, I have not always been involved in software engineering – my formal education is an MSc in theoretical
+I have not always been involved in software engineering – my formal education is an MSc in theoretical
 mathematics (aka pure mathematics). In the world of the queen of sciences, my interests focused on modern algebraic
 geometry.
 
