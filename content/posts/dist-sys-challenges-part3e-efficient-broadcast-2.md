@@ -103,26 +103,26 @@ func (b *Batcher) Close() { ❻
 }
 ```
 
-The `Batcher` struct holds internal map of batched messages, where we batch array of messages (thst is, numbers)
+The `Batcher` struct ⓿ holds internal map of batched messages, where we batch array of messages (thst is, numbers)
 per each peer id of the node in question. There is also `ticker` and channel of `FlushEvent`'s which is channel of 
 communication of the batcher with the external node (in which the batcher is embedded on).
 
-The `FlushEvent` contains only info about the id of the peer and the batched messages. It is just plain data, which
+The `FlushEvent` ❶ contains only info about the id of the peer and the batched messages. It is just plain data, which
 is meant to be *interpreted* somehow in consumers of the `flushChan`  channel. Such a separation of concerns is solid
 design choice, since it is easier to reason and test the code.
 
-In the constructor function we just configure the `ticker` via `batchTimeout` duration period - the intuition is that when
+In the constructor function ❷ we just configure the `ticker` via `batchTimeout` duration period - the intuition is that when
 increasing this timeout, we minimize the `msgs-per-op` cluster characteristic and increase overall latency of the system 
 (and vice versa). I'll summarize the experiments at the very end of this article.
 
 The `Run` function is spawned as a separate goroutine in the node process and is supposed to work infinitedly.
 After the (already configured) `ticker` ticks, we range all the peers of the node and for each of them we seek for 
-batched messages. For each of such a batch, we send corresponding `FlushEvent` via `flushChan` channel. After that ceremony,
-we clear batches for given peer and iterate.
+batched messages. For each of such a batch ❸, we send corresponding `FlushEvent` via `flushChan` channel. After that ceremony,
+we clear batches for given peer ❹ and iterate.
 
-The `Add` function is straighforward, we just append to array of batched messages.
+The `Add` function ❺ is straighforward, we just append to array of batched messages.
 
-The `Close` method is used to clear allocated resources, that is to stop the `ticker` and close `flushChan` channel.
+The `Close` method ❻ is used to clear allocated resources, that is to stop the `ticker` and close `flushChan` channel.
 
 Below is a diagram illustrating the described system:
 
@@ -393,4 +393,5 @@ Here I show the table which shows the impact of `batchTimeout` parameter to the 
 
 ![Maelstrom](/images/latencies-table.png)
  
-It looks like stable-latency behaves as \(x \mapsto kx+b \) for \(k \approx 4.1\) and \(b \approx 365\). 
+It looks like stable-latency behaves as \(x \mapsto kx+b \) for \(k \approx 4.1\) and \(b \approx 365\).
+Of course, this is only a heuristic.

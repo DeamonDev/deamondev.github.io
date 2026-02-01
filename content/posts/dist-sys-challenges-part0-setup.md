@@ -173,16 +173,6 @@ You can install `maelstrom` binary directly on your `$PATH` or just download it 
 
 I'll stick with the latter approach. The binary is then present under `./maelstrom/maelstrom`.
 
-### .gitignore
-
-Since I rather want to avoid commiting large files to git, I post here a minimal .gitignore file:
-
-```.gitignore
-maelstrom/
-store/
-.idea/
-```
-
 ## Summary
 
 We’re ready to start solving the first challenge — the [echo challenge](https://fly.io/dist-sys/1/) (who would’ve
