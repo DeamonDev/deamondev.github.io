@@ -21,7 +21,7 @@ There are two important metrics that we'll need to tune at later stages of the b
 - `:net -> :msgs-per-op`
 - `:workload -> :stable-latencies`
 
-The first value measure shows the number of messages exchanged per logical operation. The second value are quantiles which show the broadcast 
+The first value shows the number of messages exchanged per logical operation. The second value are quantiles which show the broadcast 
 latency for the minimum, median, 95th, 99th, and maximum latency request. These latencies are measured from the time a
 broadcast request was acknowledged to when it was last missing from a read on any node. For example, here’s a system whose 
 median latency was 452 milliseconds:
