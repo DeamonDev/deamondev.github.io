@@ -8,8 +8,8 @@ math = true
 
 Hello! I'm a software engineer from Poland. I am interested in topics related to distributed systems, functional
 programming and low-level tools for profiling Unix systems, particularly tools based on [eBPF technology](
-https://ebpf.io/). One thing I try to do quite regularly is reading source code of [Apache Flink](https://flink.apache.org/),
-[Apache Kafka](https://kafka.apache.org/) or diving into JVM profiling/tuning.
+https://ebpf.io/). Recently, I have been enjoying reading the source code of [Apache Flink](https://flink.apache.org/)
+and [Apache Kafka](https://kafka.apache.org/), as well as exploring the internals of JVM.
 
 I use x86 Tuxedo's PC and I highly recommend [Tuxedo manufacture](https://www.tuxedocomputers.com/en).
 
