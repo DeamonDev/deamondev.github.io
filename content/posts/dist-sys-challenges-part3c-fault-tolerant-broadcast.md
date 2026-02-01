@@ -1,6 +1,6 @@
 +++
 date = '2025-12-27T11:54:46+01:00'
-draft = true
+draft = false
 title = 'Solving gossip-glomers distributed systems challenges: fault tolerant broadcast (part 3c)'
 categories = ['software-development', 'distributed-systems']
 tags = ['distributed systems', 'broadcast', 'fault tolerance']

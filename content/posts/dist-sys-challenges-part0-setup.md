@@ -1,6 +1,6 @@
 +++
 date = '2025-10-19T17:43:15+02:00'
-draft = true
+draft = false
 title = 'Solving gossip-glomers distributed systems challenges: setup (part 0)'
 categories = ['software-development', 'distributed-systems']
 tags = ['distributed systems']
@@ -19,7 +19,7 @@ introduction to maelstrom and I'll setup the golang repository.
 Here is link to the repository: https://github.com/DeamonDev/gossip-glomers-tutorial/tree/master
 
 **Disclaimer:** While solving these challenges I sometimes use linux tracing stack tools, probably I should emphasize
-that all of this was developed under linux. But who cares for the rest?
+that all of this was developed under linux. *But who cares for the rest?*
 
 **Another Disclaimer:** Regarding the challenges: I don't want to rewrite what is already written in the challenge
 specifications. So, before digging into the challenge, please read the corresponding specification. I assume you

@@ -1,6 +1,6 @@
 +++
 date = '2025-12-18T09:22:19+01:00'
-draft = true
+draft = false
 title = 'Solving gossip-glomers distributed systems challenges: single node broadcast (part 3a)'
 categories = ['software-development', 'distributed-systems']
 tags = ['distributed systems', 'broadcast']

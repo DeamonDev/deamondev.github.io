@@ -173,8 +173,8 @@ simple check ❷ whether node id is equal to the (hardcoded) master node id.
 ![Maelstrom](/images/ivorytowerv3.png)
 
 *Welcome brave ones!
-After reading this article, our council decided to take the floor and explain why we believe that
-functional languages are better suited to building complex distributed systems....*
+After reading this article, our council decided to take the floor and explain why we THINK that
+functional languages are BETTER SUITED to building complex distributed systems....*
 
 After careful thought I decided to skip the letter from mages and just present my own take.
 I promised myself I would finish with academy, and I'd better stick to it.

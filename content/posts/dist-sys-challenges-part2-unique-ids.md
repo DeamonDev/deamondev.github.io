@@ -1,6 +1,6 @@
 +++
 date = '2025-12-14T12:57:29+01:00'
-draft = true
+draft = false
 title = 'Solving gossip-glomers distributed systems challenges: unique-ids (part 2)'
 categories = ['software-development', 'distributed-systems']
 tags = ['distributed systems']
