@@ -141,12 +141,12 @@ interesting at any given moment — I assume that my readers have a moderately h
 ## Whoami --no-tech
 
 In addition to everything I mentioned above, I am interested in Christian apologetics – the thoughts of the Church
-Fathers and, above all, the view/explanation of other religions from the perspective of Christian theology. I probably
+Fathers and the view/explanation of other religions from the perspective of Christian theology. I probably
 won't discuss this topic on this blog, but I have a few thoughts that, who knows? May be published one sunny day.
 
 Another topic that takes up my time is learning jazz and playing the piano. I will almost certainly not publish anything
-on these matters. Anyway I recommend you to check out [lilypond](https://lilypond.org/) - a free and open source
-software for creating music, ideal for [LaTeX](https://en.wikipedia.org/wiki/LaTeX) users.
+on these matters. The main reason is my laziness in writing down the notes of my arrangements.
+Anyway I recommend you to check out [lilypond](https://lilypond.org/) - a free and open source software for creating music, ideal for [LaTeX](https://en.wikipedia.org/wiki/LaTeX) users.
 
 ## The aim of this blog
 

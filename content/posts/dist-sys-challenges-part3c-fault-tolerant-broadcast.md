@@ -90,8 +90,9 @@ The main change is that I spawn ⓿ a separate goroutine when broadcasting a mes
 inside the `broadcastMessageToPeer` function, where we essentially repeat ad infinitum the process of spawning a new context ❶
 with a one-second timeout. Using that context, we send ❷ a [SyncRPC](https://pkg.go.dev/github.com/jepsen-io/maelstrom/demo/go#Node.SyncRPC) 
 call to the given peer. SyncRPC sends a synchronous RPC request. 
-RPC errors in the message body are converted to an RPCError and returned. Then we `cancel()` our context ❸, and if everything went well,
-we simply `return`. If an error occurs, we sleep ❹ for a randomized period of time (up to 50 milliseconds).
+RPC errors in the message body are converted to an [RPCError](https://pkg.go.dev/github.com/jepsen-io/maelstrom/demo/go#RPCError)
+and returned. Then we `cancel()` our context ❸, and if everything went well, we simply `return`. If an error occurs,
+we sleep ❹ for a randomized period of time (up to 50 milliseconds).
 
 **Remark**. Spawning goroutines causes little drawback
 for maelstrom to collect *local* statistics of network latencies, since we're basically returning `broadcastHandler` eagerly.
