@@ -102,8 +102,8 @@ on the class of directed subgraphs of \(G\) which contain every vertex of \(G\).
 My claim is that the spanning tree rooted at grid center minimizes the number: \[\sum_{k=1}^{25} f(\operatorname{deg}^+(v_k))\]
 In case \(f \colon x \mapsto x^2 \) then this number is just square length of vector \(\vec{v}(H)\) in \(\mathbb{Z}^{\oplus 25}\). My claim is that the spanning tree
 rooted at the grid center node minimizes this number *for every convex function*. So our choosen subgraph above is unique (up to grid automorphism) and
-minimizes these functionals. Using standard combinatorial notation, our vector is as follows: \[(4^1,3^2,2^2,1^{10},0^{10})\] Hence, its square length is:
-\[ 4^2+2\cdot 3^2+2\cdot 2^2+10\cdot 1^2+10\cdot 0^2 = 52\]
+minimizes these functionals. Using standard combinatorial notation, our vector is as follows: \[(4^1,3^2,2^2,1^{10},0^{10})\] Hence, its length squared is:
+\[ 1\cdot 4^2+2\cdot 3^2+2\cdot 2^2+10\cdot 1^2+10\cdot 0^2 = 52\]
 
 The proof is rather straightforward. Dividing the full grid into chunks and analyzing we need at least one node with outgoing degree 4. Then analyzing that
 we need at least two outgoing degree 3 nodes (if we demanded less, then at least an additional one 4 out-degree would need to exist which by function
