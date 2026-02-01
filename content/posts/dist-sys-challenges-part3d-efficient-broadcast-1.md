@@ -24,7 +24,7 @@ Our challenge is to achieve:
 * `maximum latency` should be below `600ms`
 
 **Remark**. We should still ignore the topology proposed by maelstrom, since it is just 2 dimensional grid of nodes. Such
-a topology duplicates a lot of messages and add latencies of order `2*sqrt(n)`. In fact, we may simply remove some connections
+a topology duplicates a lot of messages and add latencies of order \(2 \cdot \sqrt n\). In fact, we may simply remove some connections
 from such a grid to improve its characteristics. I will investigate this further in the corresponding topology section of this article.
 
 ## Setup
