@@ -387,9 +387,9 @@ We did it! Now the `msgs-per-op` is `5.441` which is much below `20`. Our stable
 We have reached the end of our adventure. I hope that my solutions will help someone else in solving an intriguing 
 gossip glomers challenge. Feel free to gossip about these solutions with your friends!
 
-## Appendix – Impact of batch timeout parameter to cluster's characteristics
+## Appendix – Impact of batch timeout parameter on cluster's characteristics
 
-Here I show the table which shows the impact of `batchTimeout` parameter to the characteristics in question:
+Here I show the table which shows the impact of `batchTimeout` parameter on the characteristics in question:
 
 ![Maelstrom](/images/latencies-table.png)
  
