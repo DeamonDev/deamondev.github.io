@@ -96,12 +96,15 @@ We declare `n12` to be *master* node, altough maybe better name might be *centra
 Why do I think that subgraph of full 5x5 grid is *kinda special*? Denote by \(G\) the full \(5\times 5\) grid graph and let 
 \(H\subseteq G\) be any (directed) subgraph of \(G\). For any given vertex \(v \in H\) let \(\operatorname{deg}^+(v)\) be 
 the number of *outgoing edges from* \(v\). Let us also take any convex function \(f : \mathbb{N} \rightarrow \mathbb{R}\). We're interested
-on the class of directed subgraphs of \(G\) which contain every vertex of \(G\). For any such subgraph \(H\) we take vector of numbers
+on the class of directed subgraphs of \(G\) which contain every vertex of \(G\) and for which there exists *central node* - that is a node
+for which the distance from every other node is \(\leq 5\).
+For any such subgraph \(H\) we take vector of numbers
 \[ \vec{v}(H) := (\operatorname{deg}^+(v_1), \dots, \operatorname{deg}^+(v_{25})) \in \mathbb{Z}^{\oplus 25} \]
 
-My claim is that the spanning tree rooted at grid center minimizes the number: \[\sum_{k=1}^{25} f(\operatorname{deg}^+(v_k))\]
-In case \(f \colon x \mapsto x^2 \) then this number is just square length of vector \(\vec{v}(H)\) in \(\mathbb{Z}^{\oplus 25}\). My claim is that the spanning tree
-rooted at the grid center node minimizes this number *for every convex function*. So our choosen subgraph above is unique (up to grid automorphism) and
+My claim is that the spanning tree rooted at the grid center minimizes the number: \[\sum_{k=1}^{25} f(\operatorname{deg}^+(v_k))\]
+
+For *every convex function*. In case \(f \colon x \mapsto x^2 \) then this number is just square length of vector \(\vec{v}(H)\) in \(\mathbb{Z}^{\oplus 25}\).
+So our chosen subgraph above is unique (up to grid automorphism) and
 minimizes these functionals. Using standard combinatorial notation, our vector is as follows: \[(4^1,3^2,2^2,1^{10},0^{10})\] Hence, its length squared is:
 \[ 1\cdot 4^2+2\cdot 3^2+2\cdot 2^2+10\cdot 1^2+10\cdot 0^2 = 52\]
 
