@@ -8,7 +8,7 @@ Here is a list of books, articles, blog posts... I've collected over the years a
 
 ## Books
 
-- *Operating Systems: Three Easy Pieces, Remzi and Andrea Arpaci-Dusseau* - My favourite book on OS topics. Written in
+- *Operating Systems: Three Easy Pieces, Remzi & Andrea Arpaci-Dusseau* - My favourite book on OS topics. Written in
   the style with the tone dialogue of professor and student. [link](https://pages.cs.wisc.edu/~remzi/OSTEP/)
 - *Modern Operating Systems, Tanenbaum* - So called Bible of Operating Systems. I like it as a reference
   book. [link](https://os.ecci.ucr.ac.cr/slides/Andrew-S.-Tanenbaum-Modern-Operating-Systems.pdf)
@@ -75,7 +75,6 @@ Here is a list of books, articles, blog posts... I've collected over the years a
 - *A Deep Dive into JVM Start-up* - [link](https://inside.java/2025/01/28/jvm-start-up/)
 - *The Ultimate Guide to Java Virtual
   Threads* - [link](https://rockthejvm.com/articles/the-ultimate-guide-to-java-virtual-threads)
-
 - *Project Loom: Structured Concurrency in
   Java* - [link](https://rockthejvm.com/articles/structured-concurrency-in-java#structured-concurrency)
 - *Project Loom: Structured Concurrency in JDK 25 - What's
