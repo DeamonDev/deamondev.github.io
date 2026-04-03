@@ -4,7 +4,7 @@ title = "Library"
 
 Here is a list of books, articles, blog posts... I've collected over the years and consider to be readworthy.
 
-# Operating Systems, Systems Performance
+# Operating Systems, Networks, Systems Performance
 
 ## Books
 
@@ -14,6 +14,8 @@ Here is a list of books, articles, blog posts... I've collected over the years a
   book. [link](https://os.ecci.ucr.ac.cr/slides/Andrew-S.-Tanenbaum-Modern-Operating-Systems.pdf)
 - *Systems Performance, Brendan
   Gregg* - [link](https://www.amazon.com/Systems-Performance-Brendan-Gregg/dp/0136820158?ie=UTF8&linkCode=sl1&tag=deirdrestraug-20&linkId=815ef3388ba65b674f4f8fd582713f24&language=en_US)
+- *Computer Networking: A Top-Down Approach, J. Kurose & K.
+  Ross* - [link](https://www.amazon.pl/Computer-Networking-Top-Down-James-Kurose/dp/0132856204)
 - *Learning eBPF: Programming the Linux Kernel for Enhanced Observability, Networking, and Security, Liz
   Rice* - [link](https://www.amazon.com/Learning-eBPF-Programming-Observability-Networking/dp/1098135121)
 - *BPF Performance Tools, Bendan
@@ -65,6 +67,8 @@ Here is a list of books, articles, blog posts... I've collected over the years a
 
 - *Java Performance: In-Depth Advice for Tuning and Programming Java 8, 11, and Beyond, Scott
   Oaks* - [link](https://www.amazon.pl/Java-Performance-Depth-Advice-Programming/dp/1492056111)
+- *Rust for Rustaceans: Idiomatic Programming for Experienced Developers, Jon
+  Gjengset* - [link](https://www.amazon.com/Rust-Rustaceans-Programming-Experienced-Developers/dp/1718501854)
 
 ## Articles
 
@@ -81,8 +85,14 @@ Here is a list of books, articles, blog posts... I've collected over the years a
 
 # Functional Programming
 
+## Books
+
+- *Domain Modeling Made Functional: Tackle Software Complexity with Domain-Driven Design and F#, Scott
+  Wlaschin* - [link](https://www.amazon.com/Domain-Modeling-Made-Functional-Domain-Driven/dp/1680502549)
+
 # Miscellaneous
 
-- Brendan Gregg explaining why one should not shout in the data center - [link](https://www.youtube.com/watch?v=tDacjrSCeq4)
+- Brendan Gregg explaining why one should not shout in the data
+  center - [link](https://www.youtube.com/watch?v=tDacjrSCeq4)
 
 
