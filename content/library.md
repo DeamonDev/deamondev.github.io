@@ -82,6 +82,6 @@ Here is a list of books, articles, blog posts... I've collected over the years a
 
 # Miscellaneous
 
-- Brendan Gregg explaining why one should not should in the data center? - [link](https://www.youtube.com/watch?v=tDacjrSCeq4)
+- Brendan Gregg explaining why one should not shout in the data center - [link](https://www.youtube.com/watch?v=tDacjrSCeq4)
 
 
