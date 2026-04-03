@@ -2,7 +2,7 @@
 title = "Library"
 +++
 
-Here is a list of books, articles, blog posts... I've collected over the years and consider to be worth to read.
+Here is a list of books, articles, blog posts... I've collected over the years and consider to be readworthy.
 
 # Operating Systems, Systems Performance
 
@@ -14,6 +14,8 @@ Here is a list of books, articles, blog posts... I've collected over the years a
   book. [link](https://os.ecci.ucr.ac.cr/slides/Andrew-S.-Tanenbaum-Modern-Operating-Systems.pdf)
 - *Systems Performance, Brendan
   Gregg* - [link](https://www.amazon.com/Systems-Performance-Brendan-Gregg/dp/0136820158?ie=UTF8&linkCode=sl1&tag=deirdrestraug-20&linkId=815ef3388ba65b674f4f8fd582713f24&language=en_US)
+- *Learning eBPF: Programming the Linux Kernel for Enhanced Observability, Networking, and Security, Liz
+  Rice* - [link](https://www.amazon.com/Learning-eBPF-Programming-Observability-Networking/dp/1098135121)
 - *BPF Performance Tools, Bendan
   Gregg* - [link](https://www.amazon.com/Performance-Tools-Addison-Wesley-Professional-Computing-dp-0136554822/dp/0136554822?_encoding=UTF8&me=&qid=1574969949&linkCode=sl1&tag=deirdrestraug-20&linkId=eb1d9bb4b1073a77a6db6ff3aed38740&language=en_US)
 
@@ -77,4 +79,9 @@ Here is a list of books, articles, blog posts... I've collected over the years a
 - *Go Scheduler* - [link](https://nghiant3223.github.io/2025/04/15/go-scheduler.html)
 
 # Functional Programming
+
+# Miscellaneous
+
+- Brendan Gregg explaining why one should not should in the data center? - [link](https://www.youtube.com/watch?v=tDacjrSCeq4)
+
 
