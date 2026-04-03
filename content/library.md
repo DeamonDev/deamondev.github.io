@@ -36,6 +36,7 @@ Here is a list of books, articles, blog posts... I've collected over the years a
 - *Are You Sure You Want to Use MMAP in Your Database Management System?* [link](https://db.cs.cmu.edu/mmap-cidr2022/)
 - *Deep Dive Into Apache Kafka | Storage
   Internals* - [link](https://rohithsankepally.github.io/Kafka-Storage-Internals/)
+- *io_uring for High-Performance DBMSs: When and How to Use It* - [link](https://arxiv.org/pdf/2512.04859)
 
 ## Other
 
