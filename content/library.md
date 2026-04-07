@@ -6,7 +6,7 @@ Here is a list of books, articles, blog posts... I've collected over the years a
 
 **Important Note.** I post here only the resources which I perceive to be more advanced or foundational in its nature.
 Basic textbooks, introductory blog posts are often easy to find after basic googling. That is why you'll not find here
-yet another monad tutorial or introductory scala textbooks. 
+yet another monad tutorial or introductory scala textbooks.
 
 # Operating Systems, Networks, Systems Performance
 
@@ -24,6 +24,8 @@ yet another monad tutorial or introductory scala textbooks.
   Rice* - [link](https://www.amazon.com/Learning-eBPF-Programming-Observability-Networking/dp/1098135121)
 - *BPF Performance Tools, Bendan
   Gregg* - [link](https://www.amazon.com/Performance-Tools-Addison-Wesley-Professional-Computing-dp-0136554822/dp/0136554822?_encoding=UTF8&me=&qid=1574969949&linkCode=sl1&tag=deirdrestraug-20&linkId=eb1d9bb4b1073a77a6db6ff3aed38740&language=en_US)
+- *How Linux Works, 3rd Edition: What Every Superuser Should Know, Brian
+  Ward* - [link](https://www.amazon.pl/How-Linux-Works-3rd-Superuser/dp/1718500408)
 
 ## Articles
 
