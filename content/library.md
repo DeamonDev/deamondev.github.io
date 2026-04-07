@@ -4,7 +4,7 @@ title = "Library"
 
 Here is a list of books, articles, blog posts... I've collected over the years and consider to be readworthy.
 
-**Important Note.** I post here only the resources which I perceive be more advanced or foundational in its nature.
+**Important Note.** I post here only the resources which I perceive to be more advanced or foundational in its nature.
 Basic textbooks, introductory blog posts are often easy to find after basic googling. That is why you'll not find here
 yet another monad tutorial or introductory scala textbooks. 
 
