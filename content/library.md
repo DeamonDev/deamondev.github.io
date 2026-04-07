@@ -57,6 +57,8 @@ yet another monad tutorial or introductory scala textbooks.
 
 - *Designing Data-Intensive Applications, 2nd
   Edition* - [link](https://www.oreilly.com/library/view/designing-data-intensive-applications/9781098119058/)
+- *Kafka - The Definitive Guide: Real-Time Data and Stream Processing at
+  Scale* - [link](https://www.amazon.pl/Kafka-Definitive-Real-Time-Stream-Processing/dp/1491936169)
 
 ## Articles
 
@@ -101,6 +103,7 @@ yet another monad tutorial or introductory scala textbooks.
   Univalent Foundations of Mathematics* - [link](https://homotopytypetheory.org/book/)
 - *Category Theory for Programmers, Bartosz
   Milewski* - [link](https://bartoszmilewski.com/2014/10/28/category-theory-for-programmers-the-preface/)
+- *Algebra Driven Design, Sandy Maguire* - [link](https://leanpub.com/algebra-driven-design)
 
 ## Articles
 
