@@ -8,8 +8,8 @@ Here is a list of books, articles, blog posts... I've collected over the years a
 
 ## Books
 
-- *Operating Systems: Three Easy Pieces, Remzi & Andrea Arpaci-Dusseau* - My favourite book on OS topics. Written in
-  the style with the tone dialogue of professor and student. [link](https://pages.cs.wisc.edu/~remzi/OSTEP/)
+- *Operating Systems: Three Easy Pieces, Remzi & Andrea Arpaci-Dusseau* - My favourite book on OS topics. Written in the
+  style with the tone dialogue of professor and student. [link](https://pages.cs.wisc.edu/~remzi/OSTEP/)
 - *Modern Operating Systems, Tanenbaum* - So called Bible of Operating Systems. I like it as a reference
   book. [link](https://os.ecci.ucr.ac.cr/slides/Andrew-S.-Tanenbaum-Modern-Operating-Systems.pdf)
 - *Systems Performance, Brendan
@@ -81,6 +81,7 @@ Here is a list of books, articles, blog posts... I've collected over the years a
   New* - [link](https://rockthejvm.com/articles/structured-concurrency-jdk-25)
 - *Introduction to JVM Method Profiling* - [link](https://softwaremill.com/introduction-to-jvm-method-profiling/)
 - *Go Scheduler* - [link](https://nghiant3223.github.io/2025/04/15/go-scheduler.html)
+- *The Typestate Pattern in Rust* - [link](https://cliffle.com/blog/rust-typestate/)
 
 # Functional Programming
 
@@ -93,5 +94,7 @@ Here is a list of books, articles, blog posts... I've collected over the years a
 
 - Brendan Gregg explaining why one should not shout in the data
   center - [link](https://www.youtube.com/watch?v=tDacjrSCeq4)
+- Gossip Glomers - a series of distributed systems challenges brought to you by
+  Fly.io - [link](https://fly.io/dist-sys/)
 
 
