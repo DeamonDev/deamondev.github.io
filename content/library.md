@@ -4,6 +4,10 @@ title = "Library"
 
 Here is a list of books, articles, blog posts... I've collected over the years and consider to be readworthy.
 
+**Important Note.** I post here only the resources which I perceive be more advanced or foundational in its nature.
+Basic textbooks, introductory blog posts are often easy to find after basic googling. That is why you'll not find here
+yet another monad tutorial or introductory scala textbooks. 
+
 # Operating Systems, Networks, Systems Performance
 
 ## Books
@@ -89,6 +93,18 @@ Here is a list of books, articles, blog posts... I've collected over the years a
 
 - *Domain Modeling Made Functional: Tackle Software Complexity with Domain-Driven Design and F#, Scott
   Wlaschin* - [link](https://www.amazon.com/Domain-Modeling-Made-Functional-Domain-Driven/dp/1680502549)
+- *Type-Driven Development with Idris, Edwin
+  Brady* - [link](https://www.amazon.com/Type-driven-Development-Idris-Edwin-Brady/dp/1617293024)
+- *Homotopy Type Theory:
+  Univalent Foundations of Mathematics* - [link](https://homotopytypetheory.org/book/)
+- *Category Theory for Programmers, Bartosz
+  Milewski* - [link](https://bartoszmilewski.com/2014/10/28/category-theory-for-programmers-the-preface/)
+
+## Articles
+
+- *Functional Pearls* - Functional pearls are elegant, instructive examples of functional programming. They are supposed
+  to be fun, and they teach important programming techniques and fundamental design
+  principles - [link](https://wiki.haskell.org/Research_papers/Functional_pearls)
 
 # Miscellaneous
 
