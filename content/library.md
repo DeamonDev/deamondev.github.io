@@ -31,6 +31,8 @@ yet another monad tutorial or introductory scala textbooks.
 
 - *Unlocking Kafka's Potential: Tackling Tail Latency with
   eBPF* - [link](https://blog.allegro.tech/2024/03/kafka-performance-analysis.html)
+- *Translation Caching: Skip, Don’t Walk (the Page
+  Table)* - [link](https://www.cs.rice.edu/CS/Architecture/docs/barr-isca10.pdf)
 
 # Storage
 
