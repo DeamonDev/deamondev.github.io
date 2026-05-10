@@ -70,6 +70,8 @@ yet another monad tutorial or introductory scala textbooks.
   Techniques* - [link](https://blog.vega.io/posts/probabilistic_techniques/)
 - *How to Avoid Cascading Failures in Distributed
   Systems* - [link](https://www.infoq.com/articles/anatomy-cascading-failure/)
+- *Time, Clocks, and the Ordering of Events in a Distributed System, Lessie Lamport* - [link](https://lamport.azurewebsites.net/pubs/time-clocks.pdf)
+- *Linearizability: A Correctness Condition for Concurrent Objects* - [link](https://cs.brown.edu/people/mph/HerlihyW90/p463-herlihy.pdf)
 
 # JVM, runtimes, programming languages
 
