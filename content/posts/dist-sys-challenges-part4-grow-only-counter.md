@@ -1,7 +1,7 @@
 +++
 date = '2026-05-12T22:04:26+02:00'
 draft = true
-title = 'Solving gossip-glomers distributed systems challenges: grow only counter (part 4)'
+title = 'Solving gossip-glomers distributed systems challenges: grow only counter (part 4) with introduction to sequential consistency and linearizability'
 categories = ['software-development', 'distributed-systems']
 tags = ['distributed systems', 'sequential-consistency', 'linearizability', 'fault tolerance']
 toc = true
@@ -51,21 +51,22 @@ Here is example of legal sequential history for stack: \[ \begin{aligned} \Sigma
 b)), \\ &\operatorname{res}(
 \mathrm{push}(b) \to \mathrm{ok}), \\ &\operatorname{inv}(\mathrm{pop}()), \\ &\operatorname{res}(\mathrm{pop}() \to
 b), \\ &\operatorname{inv}(\mathrm{pop}()), \\ &\operatorname{res}(\mathrm{pop}() \to a)
-\,\rangle \end{aligned} \] is an element of \(\operatorname{SeqSpec}(\operatorname{stack})\). Formally we should denote
-which process performed which invocation/response - but when thinking at the level of sequential history for given
-object, we should narrow our mind to local (synchronous) reasoning.
+\,\rangle \end{aligned} \] It is not hard to see that \(\Sigma\) __is an element of__ \(\operatorname{SeqSpec}(
+\operatorname{stack})\). Formally we should denote which process performed which invocation/response - but when thinking
+at the level of sequential history for given object, we should narrow our mind to local (synchronous) reasoning.
 
 Having formally defined all of these, we may give informal definition of distributed system as a *collection of
 independent processes that communicate indirectly throught shared objects or directly throught messages*
 
 Besides the sequential histories of the local objects, we consider the history of the whole system. For example, suppose
 the system has two shared objects \[ X = \text{register}, \qquad S = \text{stack}. \] A whole system history could be:
-\[ \begin{aligned} H = \langle\, &\operatorname{inv}_{P_1}(X.\mathrm{write}(1)), \\ &\operatorname{res}_{P_1}(
+\[ \begin{aligned} \Sigma = \langle\, &\operatorname{inv}_{P_1}(X.\mathrm{write}(1)), \\ &\operatorname{res}_{P_1}(
 X.\mathrm{write} \to \mathrm{ok}), \\ &\operatorname{inv}_{P_2}(S.\mathrm{push}(a)), \\ &\operatorname{res}_{P_2}(
 S.\mathrm{push} \to \mathrm{ok}), \\ &\operatorname{inv}_{P_1}(S.\mathrm{pop}()), \\ &\operatorname{res}_{P_1}(
 S.\mathrm{pop} \to a)
 \,\rangle . \end{aligned} \] This is history of the whole execution, because it includes operation on both \(X\) and
-\(S\). We can then localize this history to \(S\) getting \[ \begin{aligned} H \mid S = \langle\, &\operatorname{inv}
+\(S\). We can then localize this history to \(S\) getting \[ \begin{aligned} \Sigma \mid S = \langle\,
+&\operatorname{inv}
 _{P_2}(S.\mathrm{push}(a)), \\ &\operatorname{res}_{P_2}(S.\mathrm{push} \to \mathrm{ok}), \\ &\operatorname{inv}_{P_1}(
 S.\mathrm{pop}()), \\ &\operatorname{res}_{P_1}(S.\mathrm{pop} \to a)
 \,\rangle . \end{aligned} \]
@@ -76,36 +77,77 @@ Shan't we?
 
 ### Various types of orderings imposed by distributed system
 
-We assume we have some history \(H\) of events \(e_1,e_2,\dots\). I'll also assume our history is *complete*, that is
-every event is an operation, which means there is no invocation which was not returned. That assumption may be relaxed,
-by lifting to *completion of history* – but I think it might overcomplicate things.
+We assume we have some history \(\Sigma\) of events \(e_1,e_2,\dots\). I'll also assume our history is *complete*, that
+is every event is an operation, which means there is no invocation which was not returned. That assumption may be
+relaxed, by lifting to *completion of history* – but I think it might overcomplicate things.
 
 #### Ordering of events
 
-If \(H=e_1,e_2,\dots\) then we define \[e_i <_H^{ev} e_j \iff i < j\]
+If \(\Sigma=e_1,e_2,\dots\) then we define \[e_i <_\Sigma^{ev} e_j \iff i < j\]
 
-That is, left to right order of symbols in \(H\).
+That is, left to right order of symbols in \(\Sigma\).
+
+Ordering events is quite easy. The forecoming orders are related for operations. So formally we're defining these orders
+on the set of operations (which formally may be realized as a subset of product \(\Sigma \times \Sigma\)).
 
 #### Real-time order
 
 For operations (which are completed by our assumption on history) \(a\) and \(b\) we define *real time ordering*
-\[a <_H^{rt} b \iff \operatorname{res}(a) <_H^{ev} \operatorname{inv}(b)\]
+\[a <_\Sigma^{rt} b \iff \operatorname{res}(a) <_\Sigma^{ev} \operatorname{inv}(b)\]
 
-Hence it means that the response of event \(a\) appears before the invocation of event \(b\) in \(H\). Note that it is
-not important which process performed invocation or response.
+Hence it means that the response of event \(a\) appears before the invocation of event \(b\) in \(\Sigma\). Note that it
+is not important which process performed invocation or response.
 
 #### Program order
 
-For operations \(a\) and \(b\) we define *process ordering* \[a <_H^{process} b \iff \operatorname{proc}(a)
+For operations \(a\) and \(b\) we define *process ordering* \[a <_\Sigma^{process} b \iff \operatorname{proc}(a)
 =\operatorname{proc}(b)
-\;\land\; \operatorname{res}(a) <^{\mathrm{ev}}_H \operatorname{inv}(b). \]
+\;\land\; \operatorname{res}(a) <^{\mathrm{ev}}_\Sigma \operatorname{inv}(b). \]
 
 **Remark.** Note that the real-time and program order are only partial orderings in general. For example given
-\[H=\langle \operatorname{inv}_{P_i}(a)
+\[\Sigma=\langle \operatorname{inv}_{P_i}(a)
 ,\operatorname{inv}_{P_j}(b),\dots \rangle\] Then operations \(a\) and \(b\) are not comparable in real-time order. If
 \(i \neq j\) then they are also not comparable in the process order.
 
 ### Sequential consistency and linearizability
+
+#### Sequential history
+
+We say a history \(S\) is *sequential* if operations in it does not overlap. Namely it means every operation completes
+before the next operation begins \[ \operatorname{inv}(op_1), \operatorname{res}(op_1), \operatorname{inv}(op_2),
+\dots \]
+
+**Remark.** Note that for sequential history \(S\), the induced real-time order \(<_S^{rt}\) is *total order*.
+
+#### Legal sequential history
+
+A sequential history \(S\) is legal, if for every object \(X\), we have \(S|X \in \operatorname{SeqSpec}(X)\).
+
+Here is an example of legal sequential history \[\operatorname{inv}(\operatorname{write}(x,1)),\operatorname{res}(
+\operatorname{write}(x,1)),\operatorname{inv}(\operatorname{read}(
+x)),\operatorname{res}(\operatorname{read}(x)→1). \]
+
+On the other hand, this sequential history is not legal \[\operatorname{inv}(\operatorname{write}(x,1))
+,\operatorname{res}(
+\operatorname{write}(x,1)),\operatorname{inv}(\operatorname{read}(
+x)),\operatorname{res}(\operatorname{read}(x)→0). \]
+
+because after writing 1, a later read should return 1, not 0.
+
+#### Sequential consistency
+
+A history \(\Sigma\) is *sequentially consistent* iff there exists a legal sequential history \(S\) such that \[ <_
+\Sigma^{program} \subseteq <_S^{rt}\] that is, for every two operations \(a\) and \(b\), if \(a <_\Sigma^{program} b\),
+then \(a <_S^{rt} b\).
+
+Sequential consistency requires preservation of each process's program order, but not necessarily real-time order
+between two different processes.
+
+#### Linearizability
+
+##### Locality of linearizability
+
+##### Linearization points
 
 ### Compare and Swap (CAS)
 

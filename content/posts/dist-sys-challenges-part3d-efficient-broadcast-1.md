@@ -1,7 +1,7 @@
 +++
 date = '2025-12-29T17:45:24+01:00'
 draft = false
-title = 'Solving gossip-glomers distributed systems challenges: efficient broadcast 1 (part 3d)'
+title = 'Solving gossip-glomers distributed systems challenges: efficient broadcast 1 (part 3d) with aside note from the ivory tower of functional programming'
 categories = ['software-development', 'distributed-systems']
 tags = ['distributed systems', 'broadcast', 'fault tolerance']
 toc = true
