@@ -65,7 +65,7 @@ X.\mathrm{write} \to \mathrm{ok}), \\ &\operatorname{inv}_{P_2}(S.\mathrm{push}(
 S.\mathrm{push} \to \mathrm{ok}), \\ &\operatorname{inv}_{P_1}(S.\mathrm{pop}()), \\ &\operatorname{res}_{P_1}(
 S.\mathrm{pop} \to a)
 \,\rangle . \end{aligned} \] This is history of the whole execution, because it includes operation on both \(X\) and
-\(S\). We can then localize this history to \(S\) obtaining \[ \begin{aligned} H \mid S = \langle\, &\operatorname{inv}
+\(S\). We can then localize this history to \(S\) getting \[ \begin{aligned} H \mid S = \langle\, &\operatorname{inv}
 _{P_2}(S.\mathrm{push}(a)), \\ &\operatorname{res}_{P_2}(S.\mathrm{push} \to \mathrm{ok}), \\ &\operatorname{inv}_{P_1}(
 S.\mathrm{pop}()), \\ &\operatorname{res}_{P_1}(S.\mathrm{pop} \to a)
 \,\rangle . \end{aligned} \]
@@ -73,6 +73,37 @@ S.\mathrm{pop}()), \\ &\operatorname{res}_{P_1}(S.\mathrm{pop} \to a)
 So we may think of distributed system as a tuple of processes, events (operations), objects and history of the whole
 system. Having such a description we may define some properties of such a system in terms of these component objects.
 Shan't we?
+
+### Various types of orderings imposed by distributed system
+
+We assume we have some history \(H\) of events \(e_1,e_2,\dots\). I'll also assume our history is *complete*, that is
+every event is an operation, which means there is no invocation which was not returned. That assumption may be relaxed,
+by lifting to *completion of history* – but I think it might overcomplicate things.
+
+#### Ordering of events
+
+If \(H=e_1,e_2,\dots\) then we define \[e_i <_H^{ev} e_j \iff i < j\]
+
+That is, left to right order of symbols in \(H\).
+
+#### Real-time order
+
+For operations (which are completed by our assumption on history) \(a\) and \(b\) we define *real time ordering*
+\[a <_H^{rt} b \iff \operatorname{res}(a) <_H^{ev} \operatorname{inv}(b)\]
+
+Hence it means that the response of event \(a\) appears before the invocation of event \(b\) in \(H\). Note that it is
+not important which process performed invocation or response.
+
+#### Program order
+
+For operations \(a\) and \(b\) we define *process ordering* \[a <_H^{process} b \iff \operatorname{proc}(a)
+=\operatorname{proc}(b)
+\;\land\; \operatorname{res}(a) <^{\mathrm{ev}}_H \operatorname{inv}(b). \]
+
+**Remark.** Note that the real-time and program order are only partial orderings in general. For example given
+\[H=\langle \operatorname{inv}_{P_i}(a)
+,\operatorname{inv}_{P_j}(b),\dots \rangle\] Then operations \(a\) and \(b\) are not comparable in real-time order. If
+\(i \neq j\) then they are also not comparable in the process order.
 
 ### Sequential consistency and linearizability
 
