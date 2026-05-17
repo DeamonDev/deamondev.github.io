@@ -145,11 +145,23 @@ between two different processes.
 
 #### Linearizability
 
+A history \(\Sigma\) is *linearizable* iff there exists a legal sequential history \(S\) such that \[ <_\Sigma^{rt}
+\subseteq <_S^{rt}\] that is, for every two operations \(a\) and \(b\), if \(a <_\Sigma^{rt} b\), then \(a <_S^{rt} b\).
+
+Linearizability requires preservation of real-time order. We should also note one subtlety here: in a fully general
+Herlihy-Wing-style definition, histories may contain pending operations. Then one usually allows completing or removing
+pending operations before checking linearizability or sequential consistency. For our minimal example, all operations
+are completed, so this complication is not needed.
+
+#### Example of sequential history which is not linearizable
+
 ##### Locality of linearizability
 
 ##### Linearization points
 
 ### Compare and Swap (CAS)
+
+### Links
 
 ## Setup
 
