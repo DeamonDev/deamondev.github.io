@@ -121,7 +121,7 @@ before the next operation begins \[ \operatorname{inv}(op_1), \operatorname{res}
 
 #### Legal sequential history
 
-A sequential history \(S\) is legal, if for every object \(X\), we have \(S|X \in \operatorname{SeqSpec}(X)\).
+A sequential history \(S\) is *legal*, if for every object \(X\), we have \(S|X \in \operatorname{SeqSpec}(X)\).
 
 Here is an example of legal sequential history \[\operatorname{inv}(\operatorname{write}(x,1)),\operatorname{res}(
 \operatorname{write}(x,1)),\operatorname{inv}(\operatorname{read}(
@@ -140,20 +140,50 @@ A history \(\Sigma\) is *sequentially consistent* iff there exists a legal seque
 \Sigma^{program} \subseteq <_S^{rt}\] that is, for every two operations \(a\) and \(b\), if \(a <_\Sigma^{program} b\),
 then \(a <_S^{rt} b\).
 
-Sequential consistency requires preservation of each process's program order, but not necessarily real-time order
-between two different processes.
+Sequential consistency says that the execution must be explainable as some single-threaded execution that preserves the
+order of operations made by each individual process. It does not require that this explanation respect the actual
+wall-clock order between operations from different processes.
 
 #### Linearizability
 
 A history \(\Sigma\) is *linearizable* iff there exists a legal sequential history \(S\) such that \[ <_\Sigma^{rt}
 \subseteq <_S^{rt}\] that is, for every two operations \(a\) and \(b\), if \(a <_\Sigma^{rt} b\), then \(a <_S^{rt} b\).
 
-Linearizability requires preservation of real-time order. We should also note one subtlety here: in a fully general
-Herlihy-Wing-style definition, histories may contain pending operations. Then one usually allows completing or removing
-pending operations before checking linearizability or sequential consistency. For our minimal example, all operations
-are completed, so this complication is not needed.
+Linearizability says that the execution must be explainable as some single-threaded execution that also respects
+real-time order: if one operation finishes before another starts, they must appear in that order. Equivalently, each
+operation appears to take effect atomically at some point between its invocation and response (we'll come back to that
+in [Linearization points](#linearization-points) section below).
 
 #### Example of sequential history which is not linearizable
+
+I think what we need at this point is a simple example to clarify the above definitions. Navigating the maze of abstract
+concepts, whilst very enjoyable and rewarding, only makes sense when accompanied by a good example. So let’s not build
+an ivory tower; let’s move on to a minimal example of a system that is sequentially consistent but not linearizable.
+
+In our example we consider only one register (object) \(x\) with its initial value being \(0\). Lets consider history \[
+\Sigma = \langle \operatorname{inv}_{P_1}(\operatorname{write}(x, 1)), \operatorname{res}_{P_1}(\operatorname{write}(x,
+1)), \operatorname{inv}_{P_2}(\operatorname{read}(x)), \operatorname{res}_{P_2}(\operatorname{read}(x) \rightarrow 0))
+\rangle\]
+
+Let us denote operations in \(\Sigma\) to be \[ w := \langle \operatorname{inv}_{P_1}(\operatorname{write}(x, 1)),
+\operatorname{res}_{P_1}(\operatorname{write}(x, 1)) \rangle \qquad r := \langle \operatorname{inv}_{P_2}(
+\operatorname{read}(x)), \operatorname{res}_{P_2}(\operatorname{read}(x) \rightarrow 0))
+\rangle\]
+
+Hence, by the very definition of real-time order, we have \(w <_\Sigma^{rt} r\). Also note that since each process has
+only one operation, it follows that the program-order is actually empty: \[<_\Sigma^{program} = \emptyset \] In
+particular we have \[ r \not <_\Sigma^{program} w \qquad \text{and} \qquad w \not <_\Sigma^{program} r\]
+
+**Proving \(\Sigma\) is sequentially consistent**. Sequential consistency requires that there exists a legal sequential
+history \(S\) such that: \[ <_\Sigma^{program} \subseteq <_S^{rt}\] and \(S\) respects the sequential specification of
+the register \(x\). Choose \[ S := \langle r, w \rangle \] That is \(r <_S^{rt} w\). Now let us check that
+aforementioned conditions. Since empty set is contained in every other set, we have indeed \[ \emptyset = <_
+\Sigma^{program} \subseteq <_S^{rt} \] So it is left to check \(S\) is legal according to \(\operatorname{SeqSpec}(x)\).
+The register is initially equal to \(0\) and in \(S\) the read happens before the write. So when \(r\) executes, no
+write to \(x\) has happened yet. Therefore the most recent value of \(x\) is still initial value and it shows that
+\(S|x\) is an element of \(\operatorname{SeqSpec}(x)\).
+
+**Proving \(\Sigma\) is not linearizable**.
 
 ##### Locality of linearizability
 
