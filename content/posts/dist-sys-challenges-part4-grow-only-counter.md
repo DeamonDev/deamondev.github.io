@@ -193,6 +193,14 @@ a linearization of \(\Sigma\).
 
 ##### Locality of linearizability
 
+One of the most important properties of linearizability is that it is *local property*. Suppose a history \(\Sigma\)
+contains operations on finitely many object \(X_1,X_2,\dots,X_N\). Then
+
+\[ \Sigma \text{ is linearizable} \iff \forall X_i \space \Sigma|_{X_i} \text{ is linearizable}\]
+
+This is important because it makes linearizability modular. For example, if a system has a linearizable register \(X\)
+and a linearizable stack \(S\), then the combined system using both \(X\) and \(S\) is linearizable as a whole.
+
 ##### Linearization points
 
 ### Compare and Swap (CAS)
