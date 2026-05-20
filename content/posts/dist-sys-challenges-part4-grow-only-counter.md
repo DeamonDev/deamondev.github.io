@@ -183,7 +183,13 @@ The register is initially equal to \(0\) and in \(S\) the read happens before th
 write to \(x\) has happened yet. Therefore the most recent value of \(x\) is still initial value and it shows that
 \(S|x\) is an element of \(\operatorname{SeqSpec}(x)\).
 
-**Proving \(\Sigma\) is not linearizable**.
+**Proving \(\Sigma\) is not linearizable**. Linearizability requires that there exists a legal sequential history \(S'\)
+such that \[ <_\Sigma^{rt} \subseteq <_{S'}^{rt} \]
+
+From the actual history, we have \(w <_\Sigma^{rt} w\), therefore any linearization \(S'\) must satisfy \(w <_{S'}^{rt}
+r\). Since there are only two operations, the only possible sequential order satisfying it is \[ S' := \langle w,r
+\rangle \] It is obvious that \(S'|x \not \in \operatorname{SeqSpec}(x)\) so \(S'\) is not legal, hence \(S'\) cannot be
+a linearization of \(\Sigma\).
 
 ##### Locality of linearizability
 
