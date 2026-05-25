@@ -9,7 +9,7 @@ theme = 'm10c'
 
 [markup]
   [markup.tableOfContents]
-    endLevel = 5
+    endLevel = 4
   [markup.highlight]
     style = 'onedark'
   [markup.goldmark]
