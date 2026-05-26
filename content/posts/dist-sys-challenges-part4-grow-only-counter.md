@@ -232,13 +232,34 @@ Business as usual, they say.
 ##### Intuition
 
 So what did we discover? The intuition is linearization points explain why the name “linearizability” makes sense. A
-concurrent history is not linear: operations may overlap in time. Linearizability says that, despite this overlap, we
-can choose one abstract point inside each operation interval and then order operations by these points.
+concurrent history caughted in the wild is probably far from being linear: operations may overlap in time.
+Linearizability says that, despite this overlap, we can *choose one abstract point inside each operation interval and
+then order operations by these points*.
 
-Thus, a linearization point is the moment where an operation is treated as taking effect atomically. Once every
+Thus, a linearization point is the moment where an operation is treated as *taking effect atomically*. Once every
 operation has such a point, the concurrent execution becomes a single line of operations:
 \[ \operatorname{op}_1,\operatorname{op}_2,\dots, \operatorname{op}_n\] That line is the “linearized” view of the
 execution.
+
+##### Example
+
+Consider the following system
+
+![Maelstrom](/images/linearizability.drawio.svg)
+
+Then we have \[\Sigma=\langle \operatorname{inv}_{P_1}(\operatorname{op_1}), \operatorname{inv}_{P_2}(
+\operatorname{op_2}), \operatorname{res}_{P_1}(\operatorname{op_1}), \operatorname{res}_{P_2}(\operatorname{op_2}),
+\operatorname{inv}_{P_3}(\operatorname{op_3}), \operatorname{res}_{P_3}(\operatorname{op_3})
+\rangle \]
+
+We see this history is not even sequential one. This choice of linearization points \(t_2 \leq_S t_1 \leq_S t_3\) yields
+ordering of operations \[\operatorname{op}_2 \leq_S \operatorname{op}_1 \leq_S
+\operatorname{op}_3 \] And finally smearing it down we obtain abstract re-ordering of \(\Sigma\) \[S=\langle
+\operatorname{inv}_{P_2}(\operatorname{op_2}), \operatorname{res}_{P_2}(\operatorname{op_2}), \operatorname{inv}_{P_1}(
+\operatorname{op_1}), \operatorname{res}_{P_1}(\operatorname{op_1}), \operatorname{inv}_{P_3}(\operatorname{op_3}),
+\operatorname{res}_{P_3}(\operatorname{op_3}) \rangle \] As promised \( \langle S, \leq_S \rangle\) is being sequential.
+
+**Exercise.** Prove that \(\langle S, \leq_S \rangle\) is a linearization of \(\Sigma\).
 
 ### Compare and Swap (CAS)
 
