@@ -262,7 +262,8 @@ ordering of operations \[\operatorname{op}_2 \leq_S \operatorname{op}_1 \leq_S
 **Remark**. At such level of generality we of course cannot prove it is legal history. In this example I wanted to show
 you just how the choice of linearization points induces re-ordering of events and produces sequential history which is a
 *candidate*
-for linearization.
+for linearization. The natural question is now: is there some natural choice for linearization point inside operation
+completion inteval? The next section may serve as an example of such a choice for some systems.
 
 ### Compare and Swap (CAS)
 
@@ -285,9 +286,11 @@ new value, but not some intermediate state.
 
 CAS is closely related to hardware support for atomic read-modify-write instructions. Modern CPUs usually provide
 instructions that can implement CAS or similar primitives. For example, x86 provides compare-and-exchange instructions,
-commonly known as `CMPXCHG`.
+commonly known as `CMPXCHG`. The implementation (on x86) relies on the fact that the expected value is stored in a
+special accumulator register: \[ \operatorname{AL}, \operatorname{AX}, \operatorname{EAX},\text{ or}
+\operatorname{RAX}\] depending on the operand size.
 
-#### Relation of CAS to linearization points
+#### Relation of CAS instruction to linearization points
 
 CAS naturally gives linearization points because a successful CAS is the exact instant when a shared state change
 becomes visible.
