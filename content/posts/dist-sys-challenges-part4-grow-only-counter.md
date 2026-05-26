@@ -259,12 +259,49 @@ ordering of operations \[\operatorname{op}_2 \leq_S \operatorname{op}_1 \leq_S
 \operatorname{op_1}), \operatorname{res}_{P_1}(\operatorname{op_1}), \operatorname{inv}_{P_3}(\operatorname{op_3}),
 \operatorname{res}_{P_3}(\operatorname{op_3}) \rangle \] As promised \( \langle S, \leq_S \rangle\) is being sequential.
 
-
-**Remark**. At such level of generality we of course cannot prove it is legal history. In this example I wanted to show you just how
-the choice of linearization points induces re-ordering of events and produces sequential history which is a *candidate*
+**Remark**. At such level of generality we of course cannot prove it is legal history. In this example I wanted to show
+you just how the choice of linearization points induces re-ordering of events and produces sequential history which is a
+*candidate*
 for linearization.
 
 ### Compare and Swap (CAS)
+
+The lacking piece of (mandatory?) theoretical knowledge in our challenge is CAS mechanism.
+**Compare-And-Swap** usually written as \[ \operatorname{CAS}(x, \operatorname{expected}, \operatorname{new}) \] is an
+atomic operation on shared memory location \(x\).
+
+More explicitly, CAS performs the following logic atomically:
+
+```python
+if x == expected:
+    x = new
+    return success
+else:
+    return failure
+```
+
+The crucial word is *atomically*. No other process can observe CAS halfway through. It either sees the old value or the
+new value, but not some intermediate state.
+
+CAS is closely related to hardware support for atomic read-modify-write instructions. Modern CPUs usually provide
+instructions that can implement CAS or similar primitives. For example, x86 provides compare-and-exchange instructions,
+commonly known as `CMPXCHG`.
+
+#### Relation of CAS to linearization points
+
+CAS naturally gives linearization points because a successful CAS is the exact instant when a shared state change
+becomes visible.
+
+For example, in a lock-free stack, a push operation may first allocate and prepare a new node privately. None of that
+changes the abstract stack yet. The operation takes effect only when it successfully executes:
+
+\[ \operatorname{CAS}(\operatorname{stack[top], \operatorname{oldTop}, \operatorname{newTop}})\]
+
+At that moment, the top pointer changes from \(\operatorname{oldTop}\) to \(\operatorname{newTop}\), so the new element
+becomes visible as part of the stack. Therefore the successful CAS is the natural linearization point of the push.
+
+Similarly, a pop operation often linearizes at the successful CAS that changes the top of the stack from the removed
+node to the next node.
 
 ### Industry standards
 
