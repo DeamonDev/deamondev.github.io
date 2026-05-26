@@ -259,7 +259,10 @@ ordering of operations \[\operatorname{op}_2 \leq_S \operatorname{op}_1 \leq_S
 \operatorname{op_1}), \operatorname{res}_{P_1}(\operatorname{op_1}), \operatorname{inv}_{P_3}(\operatorname{op_3}),
 \operatorname{res}_{P_3}(\operatorname{op_3}) \rangle \] As promised \( \langle S, \leq_S \rangle\) is being sequential.
 
-**Exercise.** Prove that \(\langle S, \leq_S \rangle\) is a linearization of \(\Sigma\).
+
+**Remark**. At such level of generality we of course cannot prove it is legal history. In this example I wanted to show you just how
+the choice of linearization points induces re-ordering of events and produces sequential history which is a *candidate*
+for linearization.
 
 ### Compare and Swap (CAS)
 
