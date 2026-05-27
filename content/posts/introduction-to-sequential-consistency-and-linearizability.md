@@ -1,7 +1,7 @@
 +++
 date = '2026-05-12T22:04:26+02:00'
 draft = true
-title = 'Solving gossip-glomers distributed systems challenges: grow only counter (part 4) with introduction to sequential consistency and linearizability'
+title = 'Introduction to sequential consistency and linearizability'
 categories = ['software-development', 'distributed-systems']
 tags = ['distributed systems', 'sequential-consistency', 'linearizability', 'fault tolerance']
 toc = true
@@ -9,22 +9,27 @@ toc = true
 math = true
 +++
 
-## Grow Only Counter Challenge
+## Introduction
 
-...
+Recently, I’ve been enjoying a brilliant read of *Database Internals: A Deep Dive Into How Distributed Data Systems
+Work* by Alex Petrov, which I was inspired to pick up by a colleague I had the pleasure of working with at a start-up (a
+big hello to you, Raphael). This book is an exceptionally good introduction to storage engines, though I felt that some
+rather important topics related to the theory of distributed systems were given rather short shrift (inevitably, given
+that it is a book of moderate length). So I decided to expand on one of the topics that was only briefly covered there,
+and which is often described in a rather convoluted manner in various tutorials or documentation pages for a given
+database. I therefore decided to describe two key concurrency guarantees, leaving out other, presumably equally
+important guarantees (such as casual consistency). However, I hope that after reading my notes, it will be a little
+easier for someone to delve into the other guarantees and, above all, that it will clarify vague definitions and help to
+understand the proofs of correctness [by waving one’s hands around](https://en.wikipedia.org/wiki/Hand-waving).
 
-## Theoretical background
-
-While solving this challenge, we'll need to use a sequentially consistent key value store provided by maelstrom (this is
-demanded by the workload). As long as I am convinced that the general reader is aware of what the key-value store is, I
-am not quite sure about the adjective part. In this section I plan to define (formally) what sequential consistency is.
-Since sequential-consistency is closely related to another crucial guarantee which is *linearizability* I'll define that
-one as well and provide a minimal example showing the difference. Finally, I'll describe *Compare and Swap* – an atomic
-CPU instruction used in multithreaded systems to achieve synchronization.
+**The plan.** In this article I plan to define (formally) what sequential consistency is. Since sequential-consistency
+is closely related to another crucial guarantee which is *linearizability* I'll define that one as well and provide a
+minimal example showing the difference. Finally, I'll describe *Compare and Swap* – an atomic CPU instruction used in
+multithreaded systems to achieve synchronization.
 
 But before even talking about consistency guarantees, I think we should define what we mean by a distributed system.
 
-### What is a distributed system?
+## What is a distributed system?
 
 I would like to start by saying that the level of formality used to answer the question of what a distributed system is
 should be appropriately calibrated. There are many excellent works and publications on the subject, which are very good
@@ -33,7 +38,7 @@ sources of information on the topic. Links to the most important publications ar
 Nevertheless, I believe it is important to maintain an appropriate level of formality, especially if we want to
 understand exactly what the guarantees of concurrency are. Let's start with some simple definitions.
 
-#### Processes, objects and operations
+### Processes, objects and operations
 
 A *process* is n execution thread of control that invokes *operations* on *shared objects*. We denote them by
 \[P_1,P_2,\dots\] An *object* is shared data structure accessed by processes. Examples being \[\operatorname{register},
@@ -75,13 +80,13 @@ So we may think of distributed system as a tuple of processes, events (operation
 system. Having such a description we may define some properties of such a system in terms of these component objects.
 Shan't we?
 
-### Various types of orderings imposed by distributed system
+## Various types of orderings imposed by distributed system
 
 We assume we have some history \(\Sigma\) of events \(e_1,e_2,\dots\). I'll also assume our history is *complete*, that
 is every event is an operation, which means there is no invocation which was not returned. That assumption may be
 relaxed, by lifting to *completion of history* – but I think it might overcomplicate things.
 
-#### Ordering of events
+### Ordering of events
 
 If \(\Sigma=e_1,e_2,\dots\) then we define \[e_i <_\Sigma^{ev} e_j \iff i < j\]
 
@@ -90,7 +95,7 @@ That is, left to right order of symbols in \(\Sigma\).
 Ordering events is quite easy. The forecoming orders are related for operations. So formally we're defining these orders
 on the set of operations (which formally may be realized as a subset of product \(\Sigma \times \Sigma\)).
 
-#### Real-time order
+### Real-time order
 
 For operations (which are completed by our assumption on history) \(a\) and \(b\) we define *real time ordering*
 \[a <_\Sigma^{rt} b \iff \operatorname{res}(a) <_\Sigma^{ev} \operatorname{inv}(b)\]
@@ -98,7 +103,7 @@ For operations (which are completed by our assumption on history) \(a\) and \(b\
 Hence it means that the response of event \(a\) appears before the invocation of event \(b\) in \(\Sigma\). Note that it
 is not important which process performed invocation or response.
 
-#### Process order
+### Process order
 
 For operations \(a\) and \(b\) we define *process ordering* \[a <_\Sigma^{process} b \iff \operatorname{proc}(a)
 =\operatorname{proc}(b)
@@ -109,9 +114,9 @@ For operations \(a\) and \(b\) we define *process ordering* \[a <_\Sigma^{proces
 ,\operatorname{inv}_{P_j}(b),\dots \rangle\] Then operations \(a\) and \(b\) are not comparable in real-time order. If
 \(i \neq j\) then they are also not comparable in the process order.
 
-### Sequential consistency and linearizability
+## Sequential consistency and linearizability
 
-#### Sequential history
+### Sequential history
 
 We say a history \(S\) is *sequential* if operations in it does not overlap. Namely it means every operation completes
 before the next operation begins \[ \operatorname{inv}(op_1), \operatorname{res}(op_1), \operatorname{inv}(op_2),
@@ -119,7 +124,7 @@ before the next operation begins \[ \operatorname{inv}(op_1), \operatorname{res}
 
 **Remark.** Note that for sequential history \(S\), the induced real-time order \(<_S^{rt}\) is *total order*.
 
-#### Legal sequential history
+### Legal sequential history
 
 A sequential history \(S\) is *legal*, if for every object \(X\), we have \(S|X \in \operatorname{SeqSpec}(X)\).
 
@@ -134,7 +139,7 @@ x)),\operatorname{res}(\operatorname{read}(x)→0). \]
 
 because after writing 1, a later read should return 1, not 0.
 
-#### Sequential consistency
+### Sequential consistency
 
 A history \(\Sigma\) is *sequentially consistent* iff there exists a legal sequential history \(S\) such that \[ <_
 \Sigma^{proc} \subseteq <_S^{rt}\] that is, for every two operations \(a\) and \(b\), if \(a <_\Sigma^{proc} b\), then
@@ -144,7 +149,7 @@ Sequential consistency says that the execution must be explainable as some singl
 order of operations made by each individual process. It does not require that this explanation respect the actual
 wall-clock order between operations from different processes.
 
-#### Linearizability
+### Linearizability
 
 A history \(\Sigma\) is *linearizable* iff there exists a legal sequential history \(S\) such that \[ <_\Sigma^{rt}
 \subseteq <_S^{rt}\] that is, for every two operations \(a\) and \(b\), if \(a <_\Sigma^{rt} b\), then \(a <_S^{rt} b\).
@@ -154,7 +159,7 @@ real-time order: if one operation finishes before another starts, they must appe
 operation appears to take effect atomically at some point between its invocation and response (we'll come back to that
 in [Linearization points](#linearization-points) section below).
 
-#### Example of sequential history which is not linearizable
+### Example of sequential history which is not linearizable
 
 I think what we need at this point is a simple example to clarify the above definitions. Navigating the maze of abstract
 concepts, whilst very enjoyable and rewarding, only makes sense when accompanied by a good example. So let’s not build
@@ -191,7 +196,7 @@ r\). Since there are only two operations, the only possible sequential order sat
 \rangle \] It is obvious that \(S'|x \not \in \operatorname{SeqSpec}(x)\) so \(S'\) is not legal, hence \(S'\) cannot be
 a linearization of \(\Sigma\).
 
-#### Locality of linearizability
+### Locality of linearizability
 
 One of the most important properties of linearizability is that it is a *local property*. Suppose a history \(\Sigma\)
 contains operations on finitely many objects \(X_1,X_2,\dots, X_N\). Then
@@ -201,7 +206,7 @@ contains operations on finitely many objects \(X_1,X_2,\dots, X_N\). Then
 This is important because it makes linearizability modular. For example, if a system has a linearizable register \(X\)
 and a linearizable stack \(S\), then the combined system using both \(X\) and \(S\) is linearizable as a whole.
 
-#### Linearization points
+### Linearization points
 
 There is a well-known technique of baking legal sequential history \(S\) to prove the system is linearizable, which in
 fact conveys to us an intuition why we call such a system "linearizable". The idea is to take existing ordering
@@ -209,7 +214,7 @@ fact conveys to us an intuition why we call such a system "linearizable". The id
 another ordering of operations from \(\operatorname{Ops}(\Sigma)\) which *may happen to be* linearization of \(\Sigma\).
 Let me jump into formalities for a moment.
 
-##### Step 1. Introducting linearization points into existing system
+#### Step 1. Introducting linearization points into existing system
 
 Let us consider history \(\Sigma\). For every operation \(\operatorname{op} \in \operatorname{Ops}(\Sigma)\) let us
 choose a (kinda formal) point \(t_{\operatorname{op}}\) satisfying \[\operatorname{inv}(\operatorname{op}) \leq_
@@ -217,19 +222,19 @@ choose a (kinda formal) point \(t_{\operatorname{op}}\) satisfying \[\operatorna
 {\operatorname{op}} \leq_\Sigma^{ev} \operatorname{res}(\operatorname{op})\] where \(\leq_\Sigma^{ev}\) is an event
 order generated by \(\Sigma\) [defined above](#ordering-of-events).
 
-##### Step 2. Ordering of operations by linearization points
+#### Step 2. Ordering of operations by linearization points
 
 For two operations \(a,b \in \operatorname{Ops}(\Sigma)\) let us define new order \(\leq_S\) by putting \(a \leq_S b\)
 whenever \(t_a \leq t_b\). Having such an ordering of *operations* we may *smear it down* into ordering of *events* in a
 trivial way (do you see how?) and we get order \(S=\langle S, \leq_S \rangle\) of events. By the very construction, we
 see that \(S\) is sequential history. The question now is if such a produced ordering \(S\) is legal history?
 
-##### Step 3. Checking that generated sequential history is legal
+#### Step 3. Checking that generated sequential history is legal
 
 The last step is to forget about linearization points and just check that \(S\) is legal history for \(\Sigma\).
 Business as usual, they say.
 
-##### Intuition
+#### Intuition
 
 So what did we discover? The intuition is linearization points explain why the name “linearizability” makes sense. A
 concurrent history caughted in the wild is probably far from being linear: operations may overlap in time.
@@ -241,7 +246,7 @@ operation has such a point, the concurrent execution becomes a single line of op
 \[ \operatorname{op}_1,\operatorname{op}_2,\dots, \operatorname{op}_n\] That line is the “linearized” view of the
 execution.
 
-##### Example
+#### Example
 
 Consider the following system
 
@@ -265,9 +270,9 @@ you just how the choice of linearization points induces re-ordering of events an
 for linearization. The natural question is now: is there some natural choice for linearization point inside operation
 completion inteval? The next section may serve as an example of such a choice for some systems.
 
-### Compare and Swap (CAS)
+## Compare and Swap (CAS)
 
-The lacking piece of (mandatory?) theoretical knowledge in our challenge is CAS mechanism.
+...
 **Compare-And-Swap** usually written as \[ \operatorname{CAS}(x, \operatorname{expected}, \operatorname{new}) \] is an
 atomic operation on shared memory location \(x\).
 
@@ -290,7 +295,7 @@ commonly known as `CMPXCHG`. The implementation (on x86) relies on the fact that
 special accumulator register: \[ \operatorname{AL}, \operatorname{AX}, \operatorname{EAX},\text{ or}
 \operatorname{RAX}\] depending on the operand size.
 
-#### Relation of CAS instruction to linearization points
+### Relation of CAS instruction to linearization points
 
 CAS naturally gives linearization points because a successful CAS is the exact instant when a shared state change
 becomes visible.
@@ -306,14 +311,32 @@ becomes visible as part of the stack. Therefore the successful CAS is the natura
 Similarly, a pop operation often linearizes at the successful CAS that changes the top of the stack from the removed
 node to the next node.
 
-### Industry standards
+## Industry standards
 
-### Links
+I have prepared table consisting of five commonly used distributed systems with their guarantees and links to relevant
+documentation.
 
-## Setup
+| System              | Vendor / common guarantee                                             | Compact meaning                                                                                                                                                                                                              |
+|---------------------|-----------------------------------------------------------------------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| **Amazon S3**       | **Strong read-after-write consistency**                               | After a successful object write, later `GET` and `LIST` requests observe the new state. This was not always true historically; S3 [changed this][6] guarantee in 2020. ([Amazon Web Services, Inc.][1])                      |
+| **DynamoDB**        | **Eventual reads by default; strongly consistent reads optionally**   | A normal read may briefly return stale data. A strongly consistent read returns the most up-to-date data, but only for tables and local secondary indexes, not global secondary indexes or streams. ([AWS Documentation][2]) |
+| **Google Spanner**  | **External consistency / strict serializability**                     | Transactions behave as if they execute in a serial order that respects real-time commit order. This is a transaction-level analogue of linearizability plus serializability. ([Google Cloud Documentation][3])               |
+| **etcd**            | **Linearizable operations by default; serializable reads optionally** | Default reads reflect the current consensus state. For performance, etcd also offers “serializable” reads that can be served locally and may be stale. ([etcd][4])                                                           |
+| **Azure Cosmos DB** | **Tunable consistency levels**                                        | The application chooses among levels such as Strong, Bounded Staleness, Session, Consistent Prefix, and Eventual, trading freshness for latency/availability. ([Microsoft Learn][5])                                         |
 
-### Makefile
+[1]: https://aws.amazon.com/s3/consistency "Amazon S3 Strong Consistency"
 
-## Code
+[2]: https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/HowItWorks.ReadConsistency.html "DynamoDB read consistency"
 
-## Summary
+[3]: https://docs.cloud.google.com/spanner/docs/true-time-external-consistency "Spanner: TrueTime and external consistency"
+
+[4]: https://etcd.io/docs/v3.5/learning/api_guarantees "etcd API guarantees"
+
+[5]: https://learn.microsoft.com/en-us/azure/cosmos-db/consistency-levels "Consistency level choices - Azure Cosmos DB"
+
+[6]: https://aws.amazon.com/blogs/aws/amazon-s3-update-strong-read-after-write-consistency/
+
+## Links
+
+At the very end of this section, I'll leave you with important papers / resources related to sequential consistency or
+linearizability. Enjoy!
