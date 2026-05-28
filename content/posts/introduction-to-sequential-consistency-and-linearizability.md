@@ -87,7 +87,7 @@ Shan't we?
 We assume we have some history \(\Sigma\) of events \(e_1,e_2,\dots\). I'll also assume our history is *complete*, that
 is every event is uniquely associated to some operation, which means that there is no invocation which was not
 returned (and vice versa!). That assumption may be relaxed by lifting the history in question to its *completion* - but
-I think it might overcomplicate things.
+I think it might overcomplicate things (no pun intended).
 
 ### Ordering of events
 
