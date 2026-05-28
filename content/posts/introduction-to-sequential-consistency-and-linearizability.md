@@ -33,7 +33,7 @@ But before even talking about consistency guarantees, I think we should define w
 
 I would like to start by saying that the level of formality used to answer the question of what a distributed system is
 should be appropriately calibrated. There are many excellent works and publications on the subject, which are very good
-sources of information on the topic. Links to the most important publications are provided in the 'Links' section below.
+sources of information on the topic. Links to the most important publications are provided in the [Links](#links) section below.
 
 Nevertheless, I believe it is important to maintain an appropriate level of formality, especially if we want to
 understand exactly what the guarantees of concurrency are. Let's start with some simple definitions.
