@@ -72,7 +72,7 @@ X.\mathrm{write} \to \mathrm{ok}), \\ &\operatorname{inv}_{P_2}(S.\mathrm{push}(
 S.\mathrm{push} \to \mathrm{ok}), \\ &\operatorname{inv}_{P_1}(S.\mathrm{pop}()), \\ &\operatorname{res}_{P_1}(
 S.\mathrm{pop} \to a)
 \,\rangle . \end{aligned} \] This is history of the whole execution, because it includes operation on both \(X\) and
-\(S\). We can then localize this history to \(S\) getting \[ \begin{aligned} \Sigma \mid S = \langle\,
+\(S\). We can then *localize this history to* \(S\) \[ \begin{aligned} \Sigma \mid S = \langle\,
 &\operatorname{inv}
 _{P_2}(S.\mathrm{push}(a)), \\ &\operatorname{res}_{P_2}(S.\mathrm{push} \to \mathrm{ok}), \\ &\operatorname{inv}_{P_1}(
 S.\mathrm{pop}()), \\ &\operatorname{res}_{P_1}(S.\mathrm{pop} \to a)
