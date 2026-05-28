@@ -261,6 +261,8 @@ execution.
 Consider the following system
 
 ![Maelstrom](/images/linearizability.drawio.svg)
+*Linearization points of the operations (showed as red dots). Their projections to the time-line give us linearized view
+of the complex distributed system.*
 
 Then we have \[\Sigma=\langle \operatorname{inv}_{P_1}(\operatorname{op_1}), \operatorname{inv}_{P_2}(
 \operatorname{op_2}), \operatorname{res}_{P_1}(\operatorname{op_1}), \operatorname{res}_{P_2}(\operatorname{op_2}),
