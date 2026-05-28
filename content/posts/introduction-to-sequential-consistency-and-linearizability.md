@@ -95,8 +95,9 @@ If \(\Sigma=e_1,e_2,\dots\) then we define \[e_i <_\Sigma^{ev} e_j \iff i < j\]
 
 That is, left to right order of symbols in \(\Sigma\).
 
-Ordering events is quite easy. The forecoming orders are related for operations. So formally we're defining these orders
-on the set of operations (which formally may be realized as a subset of product \(\Sigma \times \Sigma\)).
+Ordering events is quite easy. The forecoming orders are defined for operations. So formally we're defining these orders
+on the set of operations induces by history \(\Sigma\) which I will denote by \(\operatorname{Ops}(\Sigma)\)
+(which formally may be realized as a subset of product \(\Sigma \times \Sigma\)).
 
 ### Real-time order
 
