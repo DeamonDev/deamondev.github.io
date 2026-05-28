@@ -33,7 +33,8 @@ But before even talking about consistency guarantees, I think we should define w
 
 I would like to start by saying that the level of formality used to answer the question of what a distributed system is
 should be appropriately calibrated. There are many excellent works and publications on the subject, which are very good
-sources of information on the topic. Links to the most important publications are provided in the [Links](#links) section below.
+sources of information on the topic. Links to the most important publications are provided in the [Links](#links)
+section below.
 
 Nevertheless, I believe it is important to maintain an appropriate level of formality, especially if we want to
 understand exactly what the guarantees of concurrency are. Let's start with some simple definitions.
@@ -47,11 +48,12 @@ A *process* is n execution thread of control that invokes *operations* on *share
 **sequence** of *events*.
 
 An *operation* is a single method call performed by a process on an object. Formally it is pair of events: \[op=\langle
-\operatorname{inv}(op), \operatorname{res}(op)\rangle\]
+\operatorname{inv}_{P_i}(op), \operatorname{res}_{P_i}(op)\rangle\]
 
-So each event is either invocation of response of an operation.
+So each event is either invocation of response of an operation by some process \(P_i\).
 
-Here is example of legal sequential history for stack: \[ \begin{aligned} \Sigma = \langle\, &\operatorname{inv}(
+Here is example of legal sequential history (all of these adjectives are formally defined in the very next section) for
+stack: \[ \begin{aligned} \Sigma = \langle\, &\operatorname{inv}(
 \mathrm{push}(a)), \\ &\operatorname{res}(\mathrm{push}(a) \to \mathrm{ok}), \\ &\operatorname{inv}(\mathrm{push}(
 b)), \\ &\operatorname{res}(
 \mathrm{push}(b) \to \mathrm{ok}), \\ &\operatorname{inv}(\mathrm{pop}()), \\ &\operatorname{res}(\mathrm{pop}() \to
@@ -60,8 +62,8 @@ b), \\ &\operatorname{inv}(\mathrm{pop}()), \\ &\operatorname{res}(\mathrm{pop}(
 \operatorname{stack})\). Formally we should denote which process performed which invocation/response - but when thinking
 at the level of sequential history for given object, we should narrow our mind to local (synchronous) reasoning.
 
-Having formally defined all of these, we may give informal definition of distributed system as a *collection of
-independent processes that communicate indirectly throught shared objects or directly throught messages*
+We may give informal definition of distributed system as a *collection of independent processes that communicate
+indirectly throught shared objects or directly throught messages*
 
 Besides the sequential histories of the local objects, we consider the history of the whole system. For example, suppose
 the system has two shared objects \[ X = \text{register}, \qquad S = \text{stack}. \] A whole system history could be:
@@ -76,15 +78,16 @@ _{P_2}(S.\mathrm{push}(a)), \\ &\operatorname{res}_{P_2}(S.\mathrm{push} \to \ma
 S.\mathrm{pop}()), \\ &\operatorname{res}_{P_1}(S.\mathrm{pop} \to a)
 \,\rangle . \end{aligned} \]
 
-So we may think of distributed system as a tuple of processes, events (operations), objects and history of the whole
+So we may think of distributed system as a tuple of processes, events, operations, objects and history of the whole
 system. Having such a description we may define some properties of such a system in terms of these component objects.
 Shan't we?
 
 ## Various types of orderings imposed by distributed system
 
 We assume we have some history \(\Sigma\) of events \(e_1,e_2,\dots\). I'll also assume our history is *complete*, that
-is every event is an operation, which means there is no invocation which was not returned. That assumption may be
-relaxed, by lifting to *completion of history* – but I think it might overcomplicate things.
+is every event is uniquely associated to some operation, which means that there is no invocation which was not
+returned (and vice versa!). That assumption may be relaxed by lifting the history in question to its *completion* - but
+I think it might overcomplicate things.
 
 ### Ordering of events
 
