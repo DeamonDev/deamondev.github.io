@@ -308,7 +308,7 @@ commonly known as `CMPXCHG`. The implementation (on x86) relies on the fact that
 special accumulator register: \[ \operatorname{AL}, \operatorname{AX}, \operatorname{EAX},\text{ or}
 \operatorname{RAX}\] depending on the operand size.
 
-### CAS as a natural candidate for linearization point
+### CAS as a natural candidate for being a linearization point
 
 CAS naturally gives linearization points because a successful CAS is the exact instant when a shared state change
 becomes visible.
