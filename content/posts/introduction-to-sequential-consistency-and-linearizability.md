@@ -355,7 +355,7 @@ To dig deeper into this hole I encourage you to read Lessie Lamport's [[Lam79]] 
 distributed systems theory. He touches more deeply the topic of events ordering in distributed system. In particular he
 introduces logical clocks and vector clocks which are used to these days in systems like concurrent document editions.
 There is also Herlihy-Wing paper [[HW90]] on linearizability which is very readable and formal. If you want to get your
-hands dirty with formal evidence and technical arguments, go for it.
+hands dirty with formal definitions and technical arguments, go for it.
 
 That's all from me for today. See you around!
 
