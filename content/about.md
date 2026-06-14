@@ -8,14 +8,13 @@ math = true
 
 Hello! I'm a software engineer from Poland. I am interested in topics related to distributed systems, functional
 programming and low-level tools for profiling Unix systems, particularly tools based on [eBPF technology](
-https://ebpf.io/). Recently, I have been enjoying reading the source code of [Apache Flink](https://flink.apache.org/)
-and [Apache Kafka](https://kafka.apache.org/), as well as exploring the internals of JVM.
+https://ebpf.io/). I think sweet spot of my interests is building infra tools (distributed job queues, job schedulers,
+control planes, CLIs, TUIs...).
 
 I use x86 Tuxedo's PC and I highly recommend [Tuxedo manufacture](https://www.tuxedocomputers.com/en).
 
-I have not always been involved in software engineering – my formal education is an MSc in theoretical
-mathematics (aka pure mathematics). In the world of the queen of sciences, my interests focused on modern algebraic
-geometry.
+I have not always been involved in software engineering – my formal education is an MSc in theoretical mathematics (aka
+pure mathematics). In the world of the queen of sciences, my interests focused on modern algebraic geometry.
 
 {{< details summary="**Click here to read more about my mathematical interests**">}}
 
@@ -56,8 +55,8 @@ to predict whether such a group is non-trivial, since we're basically killing \(
 there are interesting combinatorial results showing a bunch of such a group are infinite! There is well known
 _Burnside problem_ which asks for which positive integers \(m,n\) is the Burnside group \(B(m,n)\) finite?
 
-The full solution to this problem is not known. For example \(B(m,3), B(m, 4)\) and \(B(m,6)\) are all finite for
-all \(m\) but particular case \(B(2,5)\) remains open.
+The full solution to this problem is not known. For example \(B(m,3), B(m, 4)\) and \(B(m,6)\) are all finite for all
+\(m\) but particular case \(B(2,5)\) remains open.
 
 **Theorem 2.** For *any* bi-invariant word metric \(|-|\) on the Burnside group \(B(n+1,2d)\) there is inequality
 \[\frac{1}{2} \text{diam}\left(\bigoplus_{B(n,d)} \mathbb{Z}_2,|-|_{\text{DS}}\right) \leq \text{diam}(B(n+1,2d),|-|)\]
@@ -97,7 +96,8 @@ There is important
 characters \[S = T^{\lor}-0 \subseteq H^2_T(pt)\]
 
 The case when this fixed points set is finite is of particular interest, since it allows us to quite easily glue local
-cohomological information to the whole information. To sketch what I mean by that, consider push-forward functor \[p_* =:
+cohomological information to the whole information. To sketch what I mean by that, consider push-forward functor
+\[p_* =:
 \int_M : H^*_T(M) \rightarrow H^{*-2 dim(M)}(pt)\] where \(p: M \rightarrow pt\) is collapse map.
 
 **Theorem [Berline-Vergne].** For \(\alpha \in H^
@@ -111,18 +111,19 @@ fractions: \[\int_M \alpha = \sum_{p \in M^T} \frac{\alpha|_p}{e_p} \]
 
 Here, I should explain some implicit identifications. For a torus action \(G=T\), we identify \(H^*_T(pt)\) with
 polynomial algebra spanned by characters of \(T\): \[H^*_T(pt)=\mathbb{Q}[T^{\vee}]=\bigoplus_
-{k=0}^\infty  \operatorname{Sym}^k\left(T^{\vee} \otimes \mathbb{Q}\right) \]
+{k=0}^\infty \operatorname{Sym}^k\left(T^{\vee} \otimes \mathbb{Q}\right) \]
 
 A character \(\lambda: T \rightarrow \mathbb{C}^*\) corresponds to an element of \(H^2_T(pt)\).
 
 **Exercise.** Apply Berline-Vergne theorem to prove: \[\sum_{k=0}^n {n \choose k} (-1)^{m+k}k^m = \begin{cases} 0, &
 \text{for } m < n, \\ n!, & \text{for } m = n. \end{cases} \]
 
-**Hint.** Consider natural action of \(T := \mathbb{C}^{n+1}\) on \(M := \mathbb{P}^n\). The fixed point set is
-discrete and consists of naturally defined coordinate lines \(M^T = \{l_0,l_1,\dots,l_n\}\). You should decompose tangent space 
-to \(l_i\) in \(M\) into one-dimensional representations. The Euler classes then split easily. 
+**Hint.** Consider natural action of \(T := \mathbb{C}^{n+1}\) on \(M := \mathbb{P}^n\). The fixed point set is discrete
+and consists of naturally defined coordinate lines \(M^T = \{l_0,l_1,\dots,l_n\}\). You should decompose tangent space
+to \(l_i\) in \(M\) into one-dimensional representations. The Euler classes then split easily.
 
-Here is my joint work together with my PhD advisor, [published](https://www.sciencedirect.com/science/article/abs/pii/S0021869322000527) in *Journal of Algebra*.
+Here is my joint work together with my PhD
+advisor, [published](https://www.sciencedirect.com/science/article/abs/pii/S0021869322000527) in *Journal of Algebra*.
 We applied localization theorem to compute interesting equivariant classes of Borel orbits of square-zero upper
 triangular matrices.
 
@@ -141,12 +142,13 @@ interesting at any given moment — I assume that my readers have a moderately h
 ## Whoami --no-tech
 
 In addition to everything I mentioned above, I am interested in Christian apologetics – the thoughts of the Church
-Fathers and the view/explanation of other religions from the perspective of Christian theology. I probably
-won't discuss this topic on this blog, but I have a few thoughts which may be published one sunny day.
+Fathers and the view/explanation of other religions from the perspective of Christian theology. I probably won't discuss
+this topic on this blog, but I have a few thoughts which may be published one sunny day.
 
 Another topic that takes up my time is learning jazz and playing the piano. I will almost certainly not publish anything
-on these matters. The main reason is my laziness in writing down the notes of my arrangements.
-Anyway I recommend you to check out [lilypond](https://lilypond.org/) - a free and open source software for creating music, ideal for [LaTeX](https://en.wikipedia.org/wiki/LaTeX) users.
+on these matters. The main reason is my laziness in writing down the notes of my arrangements. Anyway I recommend you to
+check out [lilypond](https://lilypond.org/) - a free and open source software for creating music, ideal
+for [LaTeX](https://en.wikipedia.org/wiki/LaTeX) users.
 
 ## The aim of this blog
 
