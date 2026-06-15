@@ -24,7 +24,7 @@ understand the proofs of correctness [by waving one’s hands around](https://en
 
 **The plan.** In this article I plan to define (formally) what sequential consistency is. Since sequential-consistency
 is closely related to another crucial guarantee which is *linearizability* I'll define that one as well and provide a
-minimal example showing the difference. Finally, I'll describe *Compare and Swap* – an atomic CPU instruction used in
+minimal example showing the difference. Finally, I'll describe *Compare and Swap* - an atomic CPU instruction used in
 multithreaded systems to achieve synchronization.
 
 But before even talking about consistency guarantees, I think we should define what we mean by a distributed system.
