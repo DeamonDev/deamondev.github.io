@@ -82,6 +82,22 @@ So we may think of distributed system as a tuple of processes, events, operation
 system. Having such a description we may define some properties of such a system in terms of these component objects.
 Shan't we?
 
+## Mathematical remark - what is relation?
+
+Before defining orderings relevant to linearizability or sequential consistency, I would like to recall what do we mean
+by relation in mathematics. When we speak about relation we should specify the underlying set of elements on which the
+relation is defined. Let us denote such a set by \(X\). *Relation on set \(X\)* is subset \(\sqsubseteq \) of cartesian
+product \(X \times X\). By writing \(x \sqsubseteq y\) we mean just the fact that the pair \((x,y)\) is an element of 
+\(\sqsubseteq\).
+We're interested in relations for which the following properties hold:
+\[ \text{Reflexivity: } \forall x \in X.\; x \sqsubseteq x\]
+\[ \text{Anti-symmetry: } \forall x, y \in X.\; x \sqsubseteq y \wedge y \sqsubseteq x \implies x = y \]
+\[ \text{Tranzitivity: } \forall x, y, z \in X.\; (x \sqsubseteq y \wedge y \sqsubseteq z) \implies x \sqsubseteq z\]
+
+Such an operation is called *ordering*. By *total ordering* we mean ordering in which every two elements are comparable,
+that is for any \(x,y \in X\) it holds that \(x \sqsubseteq y\) or \(y \sqsubseteq x\).
+
+
 ## Various types of orderings imposed by distributed system
 
 We assume we have some history \(\Sigma\) of events \(e_1,e_2,\dots\). I'll also assume our history is *complete*, that
