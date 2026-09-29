@@ -4,6 +4,15 @@ title = "Open Source Work"
 
 Here be dragons. I post only relevant open source projects I took part in.
 
+## [Apache Flink](https://github.com/apache/flink)
+
+Apache Flink is a distributed stream-processing framework for processing data continuously as events arrive. 
+It is designed for stateful computations, event-time processing, windows, timers, fault tolerance, and exactly-once
+state consistency. Flink can also process bounded data, but its core strength is long-running streaming applications that
+maintain and update results in real time.
+
+PR's => https://github.com/apache/flink/pulls?q=is%3Apr+state%3Aclosed+author%3ADeamonDev
+
 ## [Nussknacker](https://github.com/TouK/nussknacker)
 
 Nussknacker is a low-code tool for automating actions on real time data, stream processing for the users. It is built on
